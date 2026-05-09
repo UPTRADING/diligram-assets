@@ -134,10 +134,6 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   color: #f5b700;
   font-weight: 700;
   margin-bottom: 18px;
-  padding: 6px 12px;
-  border: 1px solid rgba(245,183,0,.4);
-  border-radius: 4px;
-  background: rgba(245,183,0,.08);
 }
 #dlg-content h1 {
   font-size: clamp(2.2rem, 5vw, 4.6rem);
@@ -255,22 +251,7 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
 }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
 
-/* ── Global yellow CTA override ─────────────────────────────────────────── */
-/* Match any element with class exactly "bg-primary" (space after to avoid bg-primary/10 blobs) */
-[class*="bg-primary "] {
-  min-width: 190px !important;
-  justify-content: center !important;
-  background-color: #f5b700 !important;
-  background-image: none !important;
-  color: #0a1628 !important;
-  box-shadow: 0 8px 24px rgba(245,183,0,.30) !important;
-  transition: background-color .2s, transform .2s, box-shadow .2s !important;
-}
-[class*="bg-primary "]:hover {
-  background-color: #e0a800 !important;
-  box-shadow: 0 12px 32px rgba(245,183,0,.45) !important;
-}
-[class*="bg-primary "] svg { color: #0a1628 !important; }
+
 </style>`;
 
 const INJECT_SCRIPT = `<script id="dlg-inject">(function(){
@@ -379,9 +360,19 @@ export default async (request, context) => {
     _wst.apply(window, arguments);
   };
   setTimeout(function(){ window.scrollTo = _wst; }, 4000);
+  // Lock body scroll immediately — releases after hero is established
+  document.documentElement.style.overflow = 'hidden';
+  document.documentElement.style.position = 'fixed';
+  document.documentElement.style.width = '100%';
   // Guard interval: yank back to top if something scrolls us down
   var _gi = setInterval(function(){ if(window.scrollY > 80) _wst.call(window,0,0); }, 50);
   setTimeout(function(){ clearInterval(_gi); }, 4000);
+  // Release scroll lock after Next.js hydration settles
+  setTimeout(function(){
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.position = '';
+    document.documentElement.style.width = '';
+  }, 800);
 })()</script>
 <style id="dlg-cover-style">
 #dlg-cover {
