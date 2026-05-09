@@ -8,8 +8,8 @@ export const config = { path: "/" };
 const BG = "https://cdn.jsdelivr.net/gh/UPTRADING/diligram-assets@main/arch5_hero.jpg";
 
 const HERO_CSS = `<style id="dlg-hero-styles">
-/* 1. Hide original hero (matched by unique Tailwind class) */
-section[class*="h-[80vh]"] { display: none !important; }
+/* 1. Hide original hero — escape brackets for valid CSS attribute selector */
+section[class*="h-\\[80vh\\]"] { display: none !important; }
 
 /* 2. Scoped reset */
 #dlg-hero, #dlg-hero * { box-sizing: border-box; }
@@ -84,7 +84,7 @@ section[class*="h-[80vh]"] { display: none !important; }
   padding: 14px 32px; border-radius: 6px; font-weight: 700; font-size: 15px;
 }
 
-/* Checked state via :has() — Chrome 105+, Firefox 121+, Safari 15.4+ */
+/* Checked state via :has() */
 #dlg-hero:has(#dlg-mob-chk:checked) #dlg-mob-menu { display: flex; }
 #dlg-hero:has(#dlg-mob-chk:checked) #dlg-burger span:nth-child(1) { transform: rotate(45deg)  translateY(7px); }
 #dlg-hero:has(#dlg-mob-chk:checked) #dlg-burger span:nth-child(2) { opacity: 0; }
@@ -239,11 +239,21 @@ export default async (request, context) => {
 
   let html = await response.text();
 
-  // Inject styles into <head> (hides original hero before first paint)
+  // 1. Update page title
+  html = html.replace(
+    /<title>[^<]*<\/title>/,
+    "<title>Diligram &mdash; Total Governance Control</title>"
+  );
+
+  // 2. Inject styles into <head>
   html = html.replace("</head>", HERO_CSS + "</head>");
 
-  // Inject new hero immediately after <body> opening tag
-  html = html.replace(/(<body[^>]*>)/, "$1\n" + NEW_HERO);
+  // 3. Inject new hero BEFORE the existing hero section (not after <body>)
+  //    Find the opening of the old hero section and insert our new one before it
+  html = html.replace(
+    /(<section[^>]*class="[^"]*h-\[80vh\][^"]*")/,
+    NEW_HERO + "\n$1"
+  );
 
   const headers = new Headers(response.headers);
   headers.delete("content-length");
