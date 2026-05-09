@@ -297,24 +297,34 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     left: auto !important;
     z-index: 60 !important;
     background: transparent !important;
+    padding-bottom: 8px !important;   /* transparent breathing room below */
   }
+  /* Lock all flag containers (current + dropdown items) to 36x36 — match hamburger */
   .weglot-container,
   .weglot-container aside.weglot_switcher,
   .weglot-container .wgcurrent,
-  .weglot-container .wg-li.wgcurrent,
-  .weglot-container .wg-li a {
+  .weglot-container .wg-li,
+  .weglot-container .wg-li a,
+  .weglot-container #weglot-listbox,
+  .weglot-container #weglot-listbox li {
     width: 36px !important;
     min-width: 36px !important;
     max-width: 36px !important;
-    height: 24px !important;
-    min-height: 0 !important;
+  }
+  .weglot-container .wgcurrent,
+  .weglot-container .wg-li,
+  .weglot-container .wg-li a {
+    height: 36px !important;
+    min-height: 36px !important;
     line-height: 0 !important;
   }
+  /* Make every layer transparent and reset all chrome */
   .weglot-container .country-selector,
   .weglot-container aside.weglot_switcher,
   .weglot-container .wgcurrent,
-  .weglot-container .wg-li.wgcurrent,
-  .weglot-container .wg-li {
+  .weglot-container .wg-li,
+  .weglot-container #weglot-listbox,
+  .weglot-container #weglot-listbox li {
     position: static !important;
     background: transparent !important;
     background-color: transparent !important;
@@ -322,8 +332,14 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0 !important;
+    list-style: none !important;
   }
-  /* Hide 'English' text label */
+  /* Stack: current flag, then 4px gap, then FR flag below it */
+  .weglot-container #weglot-listbox {
+    margin-top: 4px !important;
+  }
+  .weglot-container #weglot-listbox li + li { margin-top: 4px !important; }
+  /* Hide all language text labels (English, Français) */
   .weglot-container .wg-li a {
     font-size: 0 !important;
     padding: 0 !important;
@@ -331,22 +347,24 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
+    color: transparent !important;
   }
-  /* Kill the > arrow */
+  /* Kill any chevrons / arrows */
   .weglot-container .wgcurrent::after,
   .weglot-container .wg-li::after,
   .weglot-container .country-selector::after,
   .weglot-container aside.weglot_switcher::after,
-  .weglot-container .wgcurrent::before {
+  .weglot-container .wgcurrent::before,
+  .weglot-container .wg-li::before {
     display: none !important;
     content: none !important;
   }
   .weglot-container .wg-flag {
     width: 36px !important;
-    height: 24px !important;
+    height: 36px !important;
     object-fit: cover !important;
     display: block !important;
-    border-radius: 3px !important;
+    border-radius: 4px !important;
     box-shadow: 0 2px 6px rgba(0,0,0,.25) !important;
   }
 }
