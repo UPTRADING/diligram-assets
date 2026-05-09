@@ -126,18 +126,21 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   padding: 110px 56px 0;
 }
 .dlg-kicker {
-  display: inline-block;
+  display: block;
+  width: 100%;
+  text-align: center;
   white-space: nowrap;
-  font-size: 12px;
-  letter-spacing: 2.5px;
+  font-size: 14px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   color: #f5b700;
   font-weight: 700;
-  margin-bottom: 18px;
-  padding: 6px 12px;
+  margin-bottom: 22px;
+  padding: 9px 12px;
   border: 1px solid rgba(245,183,0,.4);
   border-radius: 4px;
   background: rgba(245,183,0,.08);
+  box-sizing: border-box;
 }
 #dlg-content h1 {
   font-size: clamp(2.2rem, 5vw, 4.6rem);
@@ -267,18 +270,19 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   /* Typography */
   #dlg-content h1 { font-size: 2.6rem; line-height: 1.02; letter-spacing: -1.2px; margin: 0 0 14px; }
   .dlg-kicker {
-    align-self: flex-start !important;
-    display: inline-block !important;
-    width: auto !important;
-    max-width: calc(100vw - 40px);
-    font-size: 10px;
-    letter-spacing: 1px;
-    white-space: normal;
-    overflow: visible;
+    align-self: stretch !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center !important;
+    font-size: 11px;
+    letter-spacing: 1.6px;
+    white-space: nowrap;
+    overflow: hidden;
     text-overflow: clip;
     line-height: 1.35;
-    padding: 5px 10px;
-    margin-bottom: 12px;
+    padding: 7px 10px;
+    margin-bottom: 14px;
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
   .dlg-cta { padding: 12px 24px !important; min-height: 46px; font-size: 14px !important; align-self: flex-start; }
@@ -327,13 +331,11 @@ html[lang^="fr"] .dlg-sub,
 }
 html[lang^="fr"] .dlg-kicker,
 :lang(fr) .dlg-kicker {
-  font-size: 11px;
-  letter-spacing: .8px;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
+  font-size: 13px;
+  letter-spacing: 2.4px;
+  white-space: nowrap;
   line-height: 1.35;
-  padding: 6px 12px;
+  padding: 9px 12px;
 }
 @media (max-width: 767px) {
   html[lang^="fr"] #dlg-content h1,
@@ -344,11 +346,10 @@ html[lang^="fr"] .dlg-kicker,
   }
   html[lang^="fr"] .dlg-kicker,
   :lang(fr) .dlg-kicker {
-    font-size: 9.5px;
-    letter-spacing: .6px;
-    white-space: normal;
-    max-width: calc(100vw - 40px);
-    padding: 5px 10px;
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    white-space: nowrap;
+    padding: 7px 10px;
   }
   html[lang^="fr"] .dlg-sub,
   :lang(fr) .dlg-sub { font-size: 0.85rem; line-height: 1.5; }
