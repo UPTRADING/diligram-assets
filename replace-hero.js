@@ -20,7 +20,7 @@ section[class*="h-\\[80vh\\]"] { display: none !important; }
 #dlg-nav-links { display: flex; align-items: center; gap: 36px; }
 #dlg-nav-links a { color: #e8edf5; font-size: 14px; font-weight: 500; letter-spacing: .3px; transition: opacity .2s; }
 #dlg-nav-links a:hover { opacity: .7; }
-#dlg-explore-btn { flex-shrink: 0; background: #fff; color: #0a1628; padding: 9px 22px; border-radius: 999px; font-size: 14px; font-weight: 600; white-space: nowrap; transition: box-shadow .2s; }
+#dlg-explore-btn { flex-shrink: 0; background: #fff; color: #0a1628 !important; padding: 9px 22px; border-radius: 999px; font-size: 14px; font-weight: 600; white-space: nowrap; transition: box-shadow .2s; text-decoration: none !important; }
 #dlg-explore-btn:hover { box-shadow: 0 0 0 3px rgba(255,255,255,.28); }
 #dlg-mob-chk { display: none; }
 #dlg-burger { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; padding: 4px; cursor: pointer; z-index: 30; }
@@ -37,7 +37,7 @@ section[class*="h-\\[80vh\\]"] { display: none !important; }
 #dlg-hero:has(#dlg-mob-chk:checked) #dlg-burger span:nth-child(2) { opacity: 0; }
 #dlg-hero:has(#dlg-mob-chk:checked) #dlg-burger span:nth-child(3) { transform: rotate(-45deg) translateY(-7px); }
 #dlg-content { position: relative; z-index: 5; max-width: 1180px; margin: 0 auto; padding: 100px 56px 0; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-.dlg-kicker { display: inline-block; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: #f5b700; font-weight: 700; padding: 5px 12px; margin-bottom: 22px; border: 1px solid rgba(245,183,0,.38); border-radius: 4px; background: rgba(245,183,0,.08); }
+.dlg-kicker { display: inline-block; align-self: flex-start; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: #f5b700; font-weight: 700; padding: 5px 12px; margin-bottom: 22px; border: 1px solid rgba(245,183,0,.38); border-radius: 4px; background: rgba(245,183,0,.08); }
 #dlg-content h1 { font-size: clamp(2.1rem,4.6vw,4.2rem); line-height: 1.07; font-weight: 800; letter-spacing: -1.5px; max-width: 940px; margin: 0 0 22px; padding: 0; text-shadow: 0 4px 24px rgba(0,0,0,.55); color: #fff; }
 .dlg-gold { color: #f5b700; }
 .dlg-sub { font-size: clamp(.95rem,1.35vw,1.25rem); line-height: 1.58; color: #cfd6e2; max-width: 620px; margin: 0 0 38px; font-weight: 400; }
