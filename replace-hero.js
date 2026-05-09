@@ -273,11 +273,12 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     max-width: 100% !important;
     text-align: left !important;
     font-size: 11px;
-    letter-spacing: 1.6px;
+    letter-spacing: 1.4px;
     white-space: nowrap;
     overflow: visible;
-    line-height: 1.35;
-    padding: 6px 11px;
+    line-height: 1.2;
+    padding: 4px 9px;
+    border-radius: 3px;
     margin-bottom: 14px;
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
