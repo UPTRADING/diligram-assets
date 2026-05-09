@@ -301,11 +301,12 @@ function inject(){
   var wrap = document.createElement('div');
   wrap.innerHTML = H;
   old.parentNode.insertBefore(wrap.firstElementChild, old);
-  // Force scroll to top and clear any hash the Next.js router added
-  if(window.history && window.history.replaceState) window.history.replaceState(null,'',window.location.pathname);
-  window.scrollTo(0,0);
-  setTimeout(function(){window.scrollTo(0,0);},150);
-  setTimeout(function(){window.scrollTo(0,0);},400);
+  // Ensure page is at top
+  window.scrollTo(0, 0);
+  if(window.history && window.history.replaceState) window.history.replaceState(null, '', window.location.pathname);
+  // Remove the dark cover overlay
+  var cover = document.getElementById('dlg-cover');
+  if(cover){ cover.classList.add('dlg-cover-gone'); setTimeout(function(){ cover.parentNode && cover.parentNode.removeChild(cover); }, 400); }
 }
 
 if(document.readyState === 'complete'){
@@ -325,37 +326,30 @@ export default async (request, context) => {
   }
   let html = await response.text();
   html = html.replace(/<title>[^<]*<\/title>/, "<title>Diligram \u2014 Total Governance Control</title>");
-  // Inject hash-killer before any other scripts so it runs before Next.js hydration
+  // Inject hash-killer + dark cover overlay before any other scripts
+  // The dark cover hides the flash of #challenge-at-top while our hero injects
   const HASH_KILLER = `<script>(function(){
-  // Kill hash in URL immediately
-  if(window.location.hash) history.replaceState(null,'',window.location.pathname);
-  // Disable browser scroll restoration
   if('scrollRestoration' in history) history.scrollRestoration='manual';
-  // Clear any Next.js scroll-position sessionStorage keys
   try{ Object.keys(sessionStorage).forEach(function(k){
     if(/next|scroll/i.test(k)) sessionStorage.removeItem(k);
   }); }catch(e){}
-  // Block scrollIntoView (used by browser hash nav) for 3s
+  // Patch scrollIntoView so Next.js hash navigation during hydration is silenced
   var _siv = Element.prototype.scrollIntoView;
-  Element.prototype.scrollIntoView = function(){ /* blocked during hydration */ };
-  // Block scrollTo > 0 for 3s
-  var _sto = window.scrollTo.bind(window);
-  window.scrollTo = function(x,y){
-    var top = (typeof x==='object'&&x) ? (x.top||0) : (y||0);
-    if(top > 0) return;
-    _sto(0,0);
-  };
-  // Release block after 3s and restore natives
-  setTimeout(function(){
-    Element.prototype.scrollIntoView = _siv;
-    window.scrollTo = _sto;
-  }, 3000);
-  // Enforce top at key moments
-  function goTop(){ _sto(0,0); }
-  document.addEventListener('DOMContentLoaded', goTop);
-  window.addEventListener('load', goTop);
-})()</script>`;
+  Element.prototype.scrollIntoView = function(){};
+  setTimeout(function(){ Element.prototype.scrollIntoView = _siv; }, 4000);
+})()</script>
+<style id="dlg-cover-style">
+#dlg-cover {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #0a1628;
+  transition: opacity 0.35s ease;
+}
+#dlg-cover.dlg-cover-gone { opacity: 0; pointer-events: none; }
+</style>`;
   html = html.replace("<head>", "<head>" + HASH_KILLER);
+  // Inject the dark cover as first child of body
+  html = html.replace("<body", '<body')
+              .replace(/<body([^>]*)>/, '<body$1><div id="dlg-cover"></div>');
   html = html.replace("</head>", HERO_CSS + "</head>");
   html = html.replace("</body>", INJECT_SCRIPT + "</body>");
   const headers = new Headers(response.headers);
