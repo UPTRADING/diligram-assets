@@ -311,7 +311,7 @@ var H =
 + '<div id="dlg-proof" aria-label="Key metrics">'
 +   '<div id="dlg-proof-inner">'
 +     '<div><span class="dlg-stat-big">100K+</span><span class="dlg-stat-label">Staff on live deployments</span></div>'
-+     '<div><span class="dlg-stat-big">76\u219798%</span><span class="dlg-stat-label">Compliance in 6 months</span></div>'
++     '<div><span class="dlg-stat-big">76\u219298%</span><span class="dlg-stat-label">Compliance in 6 months</span></div>'
 +     '<div><span class="dlg-stat-big">\u00a31.8M+</span><span class="dlg-stat-label">Documented savings</span></div>'
 +     '<div><span class="dlg-stat-big">5</span><span class="dlg-stat-label">Regulated industries served</span></div>'
 +   '</div>'
