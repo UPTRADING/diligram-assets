@@ -167,7 +167,7 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   padding: 14px 32px !important;
   min-height: 52px;
   box-sizing: border-box;
-  border-radius: 9999px !important;
+  border-radius: 6px !important;
   font-weight: 600;
   font-size: 15px !important;
   line-height: 1.5;
