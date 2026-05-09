@@ -272,12 +272,12 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     width: 100% !important;
     max-width: 100% !important;
     text-align: left !important;
-    font-size: 11px;
-    letter-spacing: 1.6px;
+    font-size: 9.5px;
+    letter-spacing: 1.2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: clip;
-    line-height: 1.35;
+    line-height: 1.4;
     padding: 7px 12px;
     margin-bottom: 14px;
   }
@@ -345,10 +345,10 @@ html[lang^="fr"] .dlg-kicker,
   }
   html[lang^="fr"] .dlg-kicker,
   :lang(fr) .dlg-kicker {
-    font-size: 10px;
-    letter-spacing: 1.2px;
+    font-size: 8.5px;
+    letter-spacing: 0.9px;
     white-space: nowrap;
-    padding: 7px 10px;
+    padding: 7px 12px;
   }
   html[lang^="fr"] .dlg-sub,
   :lang(fr) .dlg-sub { font-size: 0.85rem; line-height: 1.5; }
@@ -548,9 +548,11 @@ export default async (request, context) => {
   let html = await response.text();
   html = html.replace(/<title>[^<]*<\/title>/, "<title>Diligram \u2014 Total Governance Control</title>");
   // Server-side: nuke the #challenge anchor so the browser has nothing to scroll to
-  // This kills iOS Safari's native hash scroll before any JS runs
-  html = html.replace(/\sid="challenge"/g, ' id="challenge-disabled"');
+  // Handles both raw HTML attributes AND escaped JSON inside __NEXT_DATA__ etc.
+  html = html.replace(/(\s|\\")id="challenge"/g, '$1id="challenge-disabled"');
+  html = html.replace(/\\"id\\":\\"challenge\\"/g, '\\"id\\":\\"challenge-disabled\\"');
   html = html.replace(/href=["']\/?#challenge["']/g, 'href="#"');
+  html = html.replace(/\\"href\\":\\"\/?#challenge\\"/g, '\\"href\\":\\"#\\"');
   // Inject hash-killer + dark cover overlay before any other scripts
   // The dark cover hides the flash of #challenge-at-top while our hero injects
   const HASH_KILLER = `<script>(function(){
@@ -593,7 +595,7 @@ export default async (request, context) => {
   }
   if(document.body) startObserver();
   else document.addEventListener('DOMContentLoaded', startObserver);
-  // Release after 3 seconds — long enough to outlast Next.js hydration on slow mobile
+  // Release after 8 seconds — keep guard alive long enough to outlast hydration AND lazy chunks
   setTimeout(function(){
     clearInterval(_gi);
     window.removeEventListener('scroll', snapTop, { capture: true });
@@ -603,7 +605,7 @@ export default async (request, context) => {
     window.scrollBy = _wsb;
     Element.prototype.scrollIntoView = _siv;
     if(mo){ mo.disconnect(); mo = null; }
-  }, 3000);
+  }, 8000);
 })()</script>
 <style id="dlg-cover-style">
 #dlg-cover {
