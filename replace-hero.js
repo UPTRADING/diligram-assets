@@ -164,10 +164,13 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   gap: 10px;
   background: #f5b700;
   color: #0a1628 !important;
-  padding: 16px 32px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 15px;
+  padding: 14px 32px !important;
+  min-height: 52px;
+  box-sizing: border-box;
+  border-radius: 9999px !important;
+  font-weight: 600;
+  font-size: 15px !important;
+  line-height: 1.5;
   letter-spacing: .5px;
   box-shadow: 0 8px 24px rgba(245,183,0,.3);
   transition: transform .2s, box-shadow .2s;
@@ -277,47 +280,52 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     margin-bottom: 12px;
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
-  .dlg-cta { padding: 12px 24px; font-size: 14px; align-self: flex-start; }
+  .dlg-cta { padding: 12px 24px !important; min-height: 46px; font-size: 14px !important; align-self: flex-start; }
   .dlg-stat-big { font-size: 19px; }
   .dlg-stat-label { font-size: 10px; letter-spacing: 1px; }
 }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
 
-/* Reposition Weglot translate widget — default bottom-left overlaps proof bar.
-   Move below nav bar at top-right, compact. Override inner aside (also fixed). */
+/* Reposition Weglot translate widget — flag-only, transparent, directly under hamburger.
+   Default sits bottom-left and overlaps proof bar. */
 .weglot-container {
   position: fixed !important;
-  top: 78px !important;       /* clear nav (~70px) */
-  right: 12px !important;
+  top: 64px !important;        /* directly below hamburger (~17+36 = 53 + small gap) */
+  right: 26px !important;      /* aligned with hamburger horizontally */
   bottom: auto !important;
   left: auto !important;
   z-index: 60 !important;
   width: auto !important;
   height: auto !important;
+  background: transparent !important;
 }
 .weglot-container .country-selector,
 .weglot-container aside.weglot_switcher {
-  position: static !important;  /* inherit parent placement */
+  position: static !important;
   top: auto !important; right: auto !important; bottom: auto !important; left: auto !important;
   margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
-.weglot-container .country-selector,
-.weglot-container .wg-li {
-  font-size: 12px !important;
-  line-height: 1 !important;
-}
+/* Hide the 'English' text label, keep only the flag */
+.weglot-container .wg-li a { font-size: 0 !important; line-height: 0 !important; padding: 0 !important; }
+.weglot-container .wg-li a::after { display: none !important; }
 .weglot-container .wg-flag {
-  width: 20px !important;
+  width: 26px !important;
   height: auto !important;
-  vertical-align: middle !important;
+  display: block !important;
+  border-radius: 3px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25) !important;
 }
+/* Kill the dropdown caret / arrow on the closed selector */
+.weglot-container .country-selector::after,
+.weglot-container aside.weglot_switcher::after,
+.weglot-container .wgcurrent::after { display: none !important; content: none !important; }
 @media (max-width: 767px) {
-  .weglot-container { top: 62px !important; right: 14px !important; }
-  /* Flag-only on mobile to keep it tiny and unobtrusive */
-  .weglot-container .wg-li a { font-size: 0 !important; line-height: 0 !important; }
-  .weglot-container .wg-flag { width: 22px !important; }
-  .weglot-container .country-selector::after,
-  .weglot-container aside.weglot_switcher::after { display: none !important; }
+  .weglot-container { top: 58px !important; right: 22px !important; }
+  .weglot-container .wg-flag { width: 24px !important; }
 }
 
 
