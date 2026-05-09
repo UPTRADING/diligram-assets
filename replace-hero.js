@@ -267,7 +267,7 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     align-self: flex-start !important;
     display: inline-block !important;
     width: auto !important;
-    max-width: calc(100vw - 40px);
+    max-width: calc(100vw - 80px);
     font-size: 10px;
     letter-spacing: 1px;
     white-space: nowrap;
@@ -312,10 +312,12 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   vertical-align: middle !important;
 }
 @media (max-width: 767px) {
-  .weglot-container { top: 76px !important; right: 10px !important; }
-  .weglot-container .country-selector,
-  .weglot-container .wg-li { font-size: 11px !important; }
-  .weglot-container .wg-flag { width: 18px !important; }
+  .weglot-container { top: 62px !important; right: 14px !important; }
+  /* Flag-only on mobile to keep it tiny and unobtrusive */
+  .weglot-container .wg-li a { font-size: 0 !important; line-height: 0 !important; }
+  .weglot-container .wg-flag { width: 22px !important; }
+  .weglot-container .country-selector::after,
+  .weglot-container aside.weglot_switcher::after { display: none !important; }
 }
 
 
