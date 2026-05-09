@@ -267,18 +267,17 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   /* Typography */
   #dlg-content h1 { font-size: 2.6rem; line-height: 1.02; letter-spacing: -1.2px; margin: 0 0 14px; }
   .dlg-kicker {
-    align-self: stretch !important;
-    display: block !important;
-    width: 100% !important;
+    align-self: flex-start !important;
+    display: inline-block !important;
+    width: auto !important;
     max-width: 100% !important;
     text-align: left !important;
-    font-size: 9.5px;
-    letter-spacing: 1.2px;
+    font-size: 11px;
+    letter-spacing: 1.6px;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
-    line-height: 1.4;
-    padding: 7px 12px;
+    overflow: visible;
+    line-height: 1.35;
+    padding: 6px 11px;
     margin-bottom: 14px;
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
@@ -345,10 +344,10 @@ html[lang^="fr"] .dlg-kicker,
   }
   html[lang^="fr"] .dlg-kicker,
   :lang(fr) .dlg-kicker {
-    font-size: 8.5px;
-    letter-spacing: 0.9px;
+    font-size: 9.5px;
+    letter-spacing: 1px;
     white-space: nowrap;
-    padding: 7px 12px;
+    padding: 6px 10px;
   }
   html[lang^="fr"] .dlg-sub,
   :lang(fr) .dlg-sub { font-size: 0.85rem; line-height: 1.5; }
