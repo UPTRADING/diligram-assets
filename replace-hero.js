@@ -427,9 +427,15 @@ function inject(){
   // Ensure page is at top
   window.scrollTo(0, 0);
   if(window.history && window.history.replaceState) window.history.replaceState(null, '', window.location.pathname);
-  // Remove the dark cover overlay
-  var cover = document.getElementById('dlg-cover');
-  if(cover){ cover.classList.add('dlg-cover-gone'); setTimeout(function(){ cover.parentNode && cover.parentNode.removeChild(cover); }, 400); }
+  // REVEAL: swap body-hider class so all content becomes visible at once
+  document.documentElement.classList.remove('dlg-pending');
+  document.documentElement.classList.add('dlg-ready');
+  setTimeout(function(){
+    var sp = document.getElementById('dlg-splash');
+    if(sp && sp.parentNode) sp.parentNode.removeChild(sp);
+    var cover = document.getElementById('dlg-cover');
+    if(cover && cover.parentNode) cover.parentNode.removeChild(cover);
+  }, 350);
   // Remove Antoine Amiel team card
   removeTeamMember('Antoine Amiel');
   // Update titles & strip '>' tag lines
@@ -567,6 +573,10 @@ export default async (request, context) => {
   let html = await response.text();
   html = html.replace(/<title>[^<]*<\/title>/, "<title>Diligram \u2014 Total Governance Control</title>");
 
+  // ===== NUCLEAR: hide entire body until our hero is injected =====
+  // This style block sits at the very top of <head>, so the browser CANNOT paint any body content until JS removes the rule.
+  const BODY_HIDER = `<style id="dlg-body-hider">html.dlg-pending,html.dlg-pending body{background:#0a1628 !important;}html.dlg-pending body>*:not(#dlg-splash){visibility:hidden !important;}#dlg-splash{position:fixed;inset:0;z-index:2147483647;background:#0a1628;display:flex;align-items:center;justify-content:center;}#dlg-splash::after{content:"";width:42px;height:42px;border:3px solid rgba(255,255,255,.15);border-top-color:#f5b700;border-radius:50%;animation:dlgspin 0.8s linear infinite;}@keyframes dlgspin{to{transform:rotate(360deg);}}html.dlg-ready #dlg-splash{opacity:0;pointer-events:none;transition:opacity .3s;}</style><script>document.documentElement.classList.add('dlg-pending');</script>`;
+
   // ===== Social preview meta (OG + Twitter) — overwrite all stale values =====
   const OG_TITLE = "Diligram \u2014 Total Governance Control";
   const OG_DESC  = "The award-winning AI-driven platform giving leaders real-time visibility into who has received, engaged with, and acted on critical information \u2014 across every frontline.";
@@ -679,10 +689,9 @@ export default async (request, context) => {
 }
 #dlg-cover.dlg-cover-gone { opacity: 0; pointer-events: none; }
 </style>`;
-  html = html.replace("<head>", "<head>" + HASH_KILLER);
-  // Inject the dark cover as first child of body
-  html = html.replace("<body", '<body')
-              .replace(/<body([^>]*)>/, '<body$1><div id="dlg-cover"></div>');
+  html = html.replace("<head>", "<head>" + BODY_HIDER + HASH_KILLER);
+  // Inject splash spinner as first child of body (sits above everything via #dlg-splash CSS)
+  html = html.replace(/<body([^>]*)>/, '<body$1><div id="dlg-splash"></div><div id="dlg-cover"></div>');
   html = html.replace("</head>", HERO_CSS + "</head>");
   html = html.replace("</body>", INJECT_SCRIPT + "</body>");
   const headers = new Headers(response.headers);
