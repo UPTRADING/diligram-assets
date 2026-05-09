@@ -126,21 +126,18 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   padding: 110px 56px 0;
 }
 .dlg-kicker {
-  display: block;
-  width: 100%;
-  text-align: center;
+  display: inline-block;
   white-space: nowrap;
-  font-size: 14px;
-  letter-spacing: 3px;
+  font-size: 12px;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
   color: #f5b700;
   font-weight: 700;
-  margin-bottom: 22px;
-  padding: 9px 12px;
+  margin-bottom: 18px;
+  padding: 6px 12px;
   border: 1px solid rgba(245,183,0,.4);
   border-radius: 4px;
   background: rgba(245,183,0,.08);
-  box-sizing: border-box;
 }
 #dlg-content h1 {
   font-size: clamp(2.2rem, 5vw, 4.6rem);
@@ -274,14 +271,14 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
-    text-align: center !important;
+    text-align: left !important;
     font-size: 11px;
     letter-spacing: 1.6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: clip;
     line-height: 1.35;
-    padding: 7px 10px;
+    padding: 7px 12px;
     margin-bottom: 14px;
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
@@ -331,11 +328,13 @@ html[lang^="fr"] .dlg-sub,
 }
 html[lang^="fr"] .dlg-kicker,
 :lang(fr) .dlg-kicker {
-  font-size: 13px;
-  letter-spacing: 2.4px;
-  white-space: nowrap;
+  font-size: 11px;
+  letter-spacing: .8px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
   line-height: 1.35;
-  padding: 9px 12px;
+  padding: 6px 12px;
 }
 @media (max-width: 767px) {
   html[lang^="fr"] #dlg-content h1,
