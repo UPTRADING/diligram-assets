@@ -270,13 +270,14 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     align-self: flex-start !important;
     display: inline-block !important;
     width: auto !important;
-    max-width: calc(100vw - 80px);
+    max-width: calc(100vw - 40px);
     font-size: 10px;
     letter-spacing: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 4px 10px;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    line-height: 1.35;
+    padding: 5px 10px;
     margin-bottom: 12px;
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
@@ -312,6 +313,50 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
 #dlg-mob-lang a.dlg-lang-current { opacity: 1; cursor: default; pointer-events: none; box-shadow: 0 0 0 2px rgba(245,183,0,.8); }
 #dlg-mob-lang img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+/* ===== French language overrides — FR copy is ~30-50% longer than EN, so scale down ===== */
+html[lang^="fr"] #dlg-content h1,
+:lang(fr) #dlg-content h1 {
+  font-size: clamp(1.8rem, 3.8vw, 3.6rem);
+  letter-spacing: -1px;
+  line-height: 1.04;
+}
+html[lang^="fr"] .dlg-sub,
+:lang(fr) .dlg-sub {
+  font-size: clamp(0.95rem, 1.25vw, 1.2rem);
+  line-height: 1.55;
+}
+html[lang^="fr"] .dlg-kicker,
+:lang(fr) .dlg-kicker {
+  font-size: 11px;
+  letter-spacing: .8px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.35;
+  padding: 6px 12px;
+}
+@media (max-width: 767px) {
+  html[lang^="fr"] #dlg-content h1,
+  :lang(fr) #dlg-content h1 {
+    font-size: 1.95rem;
+    letter-spacing: -0.6px;
+    line-height: 1.08;
+  }
+  html[lang^="fr"] .dlg-kicker,
+  :lang(fr) .dlg-kicker {
+    font-size: 9.5px;
+    letter-spacing: .6px;
+    white-space: normal;
+    max-width: calc(100vw - 40px);
+    padding: 5px 10px;
+  }
+  html[lang^="fr"] .dlg-sub,
+  :lang(fr) .dlg-sub { font-size: 0.85rem; line-height: 1.5; }
+  html[lang^="fr"] .dlg-stat-big,
+  :lang(fr) .dlg-stat-big { font-size: 16px; }
+  html[lang^="fr"] .dlg-stat-label,
+  :lang(fr) .dlg-stat-label { font-size: 9px; letter-spacing: .6px; }
+}
 
 </style>`;
 
