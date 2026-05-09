@@ -362,7 +362,7 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     min-height: 0 !important;
     line-height: 0 !important;
   }
-  .weglot-container { top: 60px !important; right: 54px !important; }
+  .weglot-container { top: 60px !important; right: 20px !important; }
   .weglot-container .wg-flag { width: 36px !important; height: 24px !important; object-fit: cover; }
 }
 
