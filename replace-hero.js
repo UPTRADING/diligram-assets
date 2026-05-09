@@ -286,70 +286,18 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
 }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
 
-/* Reposition Weglot translate widget — flag-only, transparent, directly under hamburger.
-   Default sits bottom-left and overlaps proof bar. */
-.weglot-container {
-  position: fixed !important;
-  top: 64px !important;        /* directly below hamburger (~17+36 = 53 + small gap) */
-  right: 26px !important;      /* aligned with hamburger horizontally */
-  bottom: auto !important;
-  left: auto !important;
-  z-index: 60 !important;
-  width: auto !important;
-  height: auto !important;
-  background: transparent !important;
-}
-.weglot-container .country-selector,
-.weglot-container aside.weglot_switcher {
-  position: static !important;
-  top: auto !important; right: auto !important; bottom: auto !important; left: auto !important;
-  margin: 0 !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-/* Force the inner .wgcurrent div transparent (defaults to white) */
-.weglot-container .wgcurrent,
-.weglot-container .wg-li.wgcurrent,
-.weglot-container .wg-li {
-  background: transparent !important;
-  background-color: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-/* Hide the 'English' text label, keep only the flag */
-.weglot-container .wg-li a {
-  font-size: 0 !important;
-  line-height: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-/* Kill the dropdown chevron/arrow (::after on .wgcurrent and aside) */
-.weglot-container .wgcurrent::after,
-.weglot-container .wg-li::after,
-.weglot-container .country-selector::after,
-.weglot-container aside.weglot_switcher::after,
-.weglot-container .wgcurrent::before,
-.weglot-container .wg-li::before {
-  display: none !important;
-  content: none !important;
-}
-.weglot-container .wg-flag {
-  width: 100% !important;
-  height: auto !important;
-  display: block !important;
-  border-radius: 3px !important;
-  box-shadow: 0 2px 6px rgba(0,0,0,.25) !important;
-}
+/* Weglot translate widget — DESKTOP UNTOUCHED.
+   Mobile-only: shrink to flag-only, transparent, position under hamburger. */
 @media (max-width: 767px) {
-  /* Match hamburger geometry exactly: width 36px, right edge 54px from viewport edge,
-     and sit directly beneath it (hamburger bottom = 17+36 = 53, gap 7px → top 60) */
+  .weglot-container {
+    position: fixed !important;
+    top: 60px !important;
+    right: 20px !important;
+    bottom: auto !important;
+    left: auto !important;
+    z-index: 60 !important;
+    background: transparent !important;
+  }
   .weglot-container,
   .weglot-container aside.weglot_switcher,
   .weglot-container .wgcurrent,
@@ -362,8 +310,45 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
     min-height: 0 !important;
     line-height: 0 !important;
   }
-  .weglot-container { top: 60px !important; right: 20px !important; }
-  .weglot-container .wg-flag { width: 36px !important; height: 24px !important; object-fit: cover; }
+  .weglot-container .country-selector,
+  .weglot-container aside.weglot_switcher,
+  .weglot-container .wgcurrent,
+  .weglot-container .wg-li.wgcurrent,
+  .weglot-container .wg-li {
+    position: static !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  /* Hide 'English' text label */
+  .weglot-container .wg-li a {
+    font-size: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  /* Kill the > arrow */
+  .weglot-container .wgcurrent::after,
+  .weglot-container .wg-li::after,
+  .weglot-container .country-selector::after,
+  .weglot-container aside.weglot_switcher::after,
+  .weglot-container .wgcurrent::before {
+    display: none !important;
+    content: none !important;
+  }
+  .weglot-container .wg-flag {
+    width: 36px !important;
+    height: 24px !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 3px !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,.25) !important;
+  }
 }
 
 
