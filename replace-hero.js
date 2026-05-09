@@ -394,25 +394,37 @@ function inject(){
   var curSel = isFR ? '.dlg-lang-fr' : '.dlg-lang-en';
   var curEls = document.querySelectorAll(curSel);
   for(var k = 0; k < curEls.length; k++){ curEls[k].classList.add('dlg-lang-current'); }
-  // Hijack our flag clicks: defer to Weglot's real language link (correct host + path)
-  function bindLangClick(sel, weglotId){
+  // Hijack our flag clicks: prefer Weglot.switchTo (avoids Weglot's link-rewriter loop on fr.*)
+  function bindLangClick(sel, lang, weglotId){
     var els = document.querySelectorAll(sel);
     for(var i = 0; i < els.length; i++){
-      els[i].addEventListener('click', function(ev){
+      var handler = function(ev){
         ev.preventDefault();
+        ev.stopPropagation();
+        // 1) Official Weglot API — works on both www and fr subdomains
+        if(window.Weglot && typeof window.Weglot.switchTo === 'function'){
+          try { window.Weglot.switchTo(lang); return; } catch(e){}
+        }
+        // 2) Use Weglot's own dropdown link (its href is authoritative)
         var real = document.getElementById(weglotId);
         if(real && real.getAttribute('href') && real.getAttribute('href') !== '#'){
           window.location.href = real.getAttribute('href');
-        } else {
-          // Fallback: navigate to other host preserving path
-          var path = location.pathname + location.search + location.hash;
-          window.location.href = (weglotId === 'weglot-language-fr' ? 'https://fr.diligram.com' : 'https://www.diligram.com') + path;
+          return;
         }
-      });
+        // 3) Last-resort hard navigation. Append ?wg-choose-original=true on FR->EN to bypass Weglot link-rewriter.
+        var path = location.pathname + location.search + location.hash;
+        var target = (lang === 'fr' ? 'https://fr.diligram.com' : 'https://www.diligram.com') + path;
+        if(lang === 'en'){
+          target += (path.indexOf('?') === -1 ? '?' : '&') + 'wg-choose-original=true';
+        }
+        window.location.assign(target);
+      };
+      els[i].addEventListener('click', handler);
+      els[i].addEventListener('touchend', handler, { passive: false });
     }
   }
-  bindLangClick('.dlg-lang-en:not(.dlg-lang-current)', 'weglot-language-en');
-  bindLangClick('.dlg-lang-fr:not(.dlg-lang-current)', 'weglot-language-fr');
+  bindLangClick('.dlg-lang-en:not(.dlg-lang-current)', 'en', 'weglot-language-en');
+  bindLangClick('.dlg-lang-fr:not(.dlg-lang-current)', 'fr', 'weglot-language-fr');
 }
 
 function fixTeamCards(){
