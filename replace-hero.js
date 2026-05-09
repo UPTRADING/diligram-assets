@@ -345,10 +345,10 @@ html[lang^="fr"] .dlg-kicker,
   }
   html[lang^="fr"] .dlg-kicker,
   :lang(fr) .dlg-kicker {
-    font-size: 9.5px;
-    letter-spacing: 1px;
+    font-size: 9px;
+    letter-spacing: 0.6px;
     white-space: nowrap;
-    padding: 6px 10px;
+    padding: 4px 8px;
   }
   html[lang^="fr"] .dlg-sub,
   :lang(fr) .dlg-sub { font-size: 0.85rem; line-height: 1.5; }
@@ -613,6 +613,9 @@ export default async (request, context) => {
   // The dark cover hides the flash of #challenge-at-top while our hero injects
   const HASH_KILLER = `<script>(function(){
   if('scrollRestoration' in history) history.scrollRestoration='manual';
+  // bfcache: when iOS Safari restores a page from back-forward cache, scripts don't re-run.
+  // Force scroll to top on every pageshow (including bfcache restores).
+  window.addEventListener('pageshow', function(){ try{ window.scrollTo(0,0); }catch(e){} });
   // Strip hash from URL immediately so Next.js never sees #challenge
   if(location.hash) history.replaceState(null,'',location.pathname+location.search);
   try{ Object.keys(sessionStorage).forEach(function(k){
