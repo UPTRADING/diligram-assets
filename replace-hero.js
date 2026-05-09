@@ -446,22 +446,46 @@ export default async (request, context) => {
   var _siv = Element.prototype.scrollIntoView;
   Element.prototype.scrollIntoView = function(){};
   var _wst = window.scrollTo;
+  var _wsb = window.scrollBy;
   window.scrollTo = function(x, y){
     if((typeof y === 'number' ? y : (x && x.top) || 0) > 80) return;
     _wst.apply(window, arguments);
   };
-  // Lock scroll briefly so nothing can scroll us off the hero
-  document.documentElement.style.overflow = 'hidden';
-  // Guard interval: yank back to top if something sneaks past
-  var _gi = setInterval(function(){ if(window.scrollY > 80) _wst.call(window,0,0); }, 50);
+  window.scrollBy = function(){};
+  // Lock html overflow until well after hydration completes
+  var htmlEl = document.documentElement;
+  htmlEl.style.overflow = 'hidden';
+  // Active scroll guard: yank back to top on any scroll event
+  function snapTop(){ if(window.scrollY > 0) _wst.call(window, 0, 0); }
+  window.addEventListener('scroll', snapTop, { passive: true, capture: true });
+  var _gi = setInterval(snapTop, 30);
+  // MutationObserver: any time React re-adds id="challenge", strip it
+  function killChallengeIds(){
+    var els = document.querySelectorAll('[id="challenge"]');
+    for(var i = 0; i < els.length; i++){
+      els[i].removeAttribute('id');
+    }
+  }
+  killChallengeIds();
+  var mo = null;
+  function startObserver(){
+    if(mo || !document.body) return;
+    mo = new MutationObserver(killChallengeIds);
+    mo.observe(document.body, { attributes: true, subtree: true, childList: true, attributeFilter: ['id'] });
+  }
+  if(document.body) startObserver();
+  else document.addEventListener('DOMContentLoaded', startObserver);
+  // Release after 3 seconds — long enough to outlast Next.js hydration on slow mobile
   setTimeout(function(){
     clearInterval(_gi);
-    document.documentElement.style.overflow = '';
+    window.removeEventListener('scroll', snapTop, { capture: true });
+    htmlEl.style.overflow = '';
     if (document.body) document.body.style.overflow = '';
-    // Restore real scroll APIs so user-clicked hash links work
     window.scrollTo = _wst;
+    window.scrollBy = _wsb;
     Element.prototype.scrollIntoView = _siv;
-  }, 1500);
+    if(mo){ mo.disconnect(); mo = null; }
+  }, 3000);
 })()</script>
 <style id="dlg-cover-style">
 #dlg-cover {
