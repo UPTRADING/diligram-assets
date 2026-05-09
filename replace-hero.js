@@ -163,7 +163,7 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   align-items: center;
   gap: 10px;
   background: #f5b700;
-  color: #0a1628;
+  color: #0a1628 !important;
   padding: 16px 32px;
   border-radius: 6px;
   font-weight: 700;
@@ -235,7 +235,7 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   #dlg-proof-inner { grid-template-columns: repeat(2, 1fr); gap: 12px 8px; }
 
   /* Typography */
-  #dlg-content h1 { font-size: 1.75rem; letter-spacing: -0.5px; margin: 0 0 12px; }
+  #dlg-content h1 { font-size: 2.2rem; letter-spacing: -0.5px; margin: 0 0 12px; }
   .dlg-kicker {
     display: block !important;
     width: 100%;
@@ -288,7 +288,6 @@ var H =
 +     '<li><a href="/#products">Products</a></li>'
 +     '<li><a href="/#team">Team</a></li>'
 +     '<li><a href="/#contact">Contact</a></li>'
-+     '<li><a href="https://mystaffapp.ai/news" target="_blank" rel="noopener">News</a></li>'
 +   '</ul>'
 +   '<label for="dlg-mob-chk" id="dlg-burger" aria-label="Open menu"><span></span><span></span><span></span></label>'
 + '</nav>'
@@ -300,7 +299,6 @@ var H =
 +     '<li><a href="/#products">Products</a></li>'
 +     '<li><a href="/#team">Team</a></li>'
 +     '<li><a href="/#contact">Contact</a></li>'
-+     '<li><a href="https://mystaffapp.ai/news" target="_blank" rel="noopener">News</a></li>'
 +   '</ul>'
 +   '<div id="dlg-mob-cta-wrap"><a href="/#solution" id="dlg-mob-cta">Explore Solutions</a></div>'
 + '</div>'
@@ -358,13 +356,25 @@ export default async (request, context) => {
   // The dark cover hides the flash of #challenge-at-top while our hero injects
   const HASH_KILLER = `<script>(function(){
   if('scrollRestoration' in history) history.scrollRestoration='manual';
+  // Strip hash from URL immediately so Next.js never sees #challenge
+  if(location.hash) history.replaceState(null,'',location.pathname+location.search);
   try{ Object.keys(sessionStorage).forEach(function(k){
     if(/next|scroll/i.test(k)) sessionStorage.removeItem(k);
   }); }catch(e){}
-  // Patch scrollIntoView so Next.js hash navigation during hydration is silenced
+  // Patch scrollIntoView
   var _siv = Element.prototype.scrollIntoView;
   Element.prototype.scrollIntoView = function(){};
   setTimeout(function(){ Element.prototype.scrollIntoView = _siv; }, 4000);
+  // Intercept window.scrollTo — block any deep-scroll for first 4s
+  var _wst = window.scrollTo;
+  window.scrollTo = function(x, y){
+    if((typeof y === 'number' ? y : (x && x.top) || 0) > 80) return;
+    _wst.apply(window, arguments);
+  };
+  setTimeout(function(){ window.scrollTo = _wst; }, 4000);
+  // Guard interval: yank back to top if something scrolls us down
+  var _gi = setInterval(function(){ if(window.scrollY > 80) _wst.call(window,0,0); }, 50);
+  setTimeout(function(){ clearInterval(_gi); }, 4000);
 })()</script>
 <style id="dlg-cover-style">
 #dlg-cover {
