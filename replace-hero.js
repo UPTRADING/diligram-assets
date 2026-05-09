@@ -427,7 +427,8 @@ function inject(){
   // Ensure page is at top
   window.scrollTo(0, 0);
   if(window.history && window.history.replaceState) window.history.replaceState(null, '', window.location.pathname);
-  // REVEAL: remove the body-hider style entirely so all content becomes visible at once
+  // REVEAL: call the bootstrap's unhide function (removes style + disconnects observer)
+  if(typeof window.__dlgUnhide === 'function'){ try{ window.__dlgUnhide(); }catch(e){} }
   var hider = document.getElementById('dlg-body-hider');
   if(hider && hider.parentNode) hider.parentNode.removeChild(hider);
   setTimeout(function(){
@@ -574,8 +575,41 @@ export default async (request, context) => {
   html = html.replace(/<title>[^<]*<\/title>/, "<title>Diligram \u2014 Total Governance Control</title>");
 
   // ===== NUCLEAR: hide entire body until our hero is injected =====
-  // Class-free: rule applies unconditionally; inject() removes the <style> tag once hero is in DOM.
-  const BODY_HIDER = `<style id="dlg-body-hider">html,body{background:#0a1628 !important;}body>*:not(#dlg-splash):not(#dlg-cover):not(#dlg-hero):not(script):not(style):not(noscript){visibility:hidden !important;}#dlg-splash{position:fixed;inset:0;z-index:2147483647;background:#0a1628;display:flex;align-items:center;justify-content:center;}#dlg-splash::after{content:"";width:42px;height:42px;border:3px solid rgba(255,255,255,.15);border-top-color:#f5b700;border-radius:50%;animation:dlgspin 0.8s linear infinite;}@keyframes dlgspin{to{transform:rotate(360deg);}}</style>`;
+  // React/Next hydration removes any <style> we put in <head>. Workaround:
+  //   1. Inline <script> appends the <style> to <html> (sibling of head/body) — React does NOT reconcile.
+  //   2. MutationObserver re-adds the style if anything tries to remove it.
+  //   3. Style is also tagged with id; inject() removes it AND disconnects the observer once hero is in DOM.
+  const BODY_HIDER = `<script id="dlg-hider-bootstrap">(function(){
+    var CSS = 'html,body{background:#0a1628 !important;}body>*:not(#dlg-splash):not(#dlg-cover):not(#dlg-hero):not(script):not(style):not(noscript){visibility:hidden !important;}#dlg-splash{position:fixed;inset:0;z-index:2147483647;background:#0a1628;display:flex;align-items:center;justify-content:center;}#dlg-splash::after{content:\"\";width:42px;height:42px;border:3px solid rgba(255,255,255,.15);border-top-color:#f5b700;border-radius:50%;animation:dlgspin 0.8s linear infinite;}@keyframes dlgspin{to{transform:rotate(360deg);}}';
+    function makeStyle(){
+      var s = document.createElement('style');
+      s.id = 'dlg-body-hider';
+      s.textContent = CSS;
+      // Append directly to <html>, NOT <head> — React does not reconcile non-head/body children of html
+      document.documentElement.appendChild(s);
+      return s;
+    }
+    var styleEl = makeStyle();
+    // Aggressive guard: if anything removes the style (React reconciliation, scripts), re-add it
+    var killed = false;
+    window.__dlgUnhide = function(){
+      killed = true;
+      if(mo) mo.disconnect();
+      var s = document.getElementById('dlg-body-hider');
+      if(s && s.parentNode) s.parentNode.removeChild(s);
+    };
+    var mo = new MutationObserver(function(){
+      if(killed) return;
+      if(!document.getElementById('dlg-body-hider')){
+        styleEl = makeStyle();
+      }
+    });
+    mo.observe(document.documentElement, { childList: true, subtree: false });
+    if(document.head){ mo.observe(document.head, { childList: true }); }
+    if(document.body){ mo.observe(document.body, { childList: true }); }
+    // Hard fallback: unhide after 4s no matter what
+    setTimeout(function(){ if(!killed) window.__dlgUnhide(); }, 4000);
+  })();</script>`;
 
   // ===== Social preview meta (OG + Twitter) — overwrite all stale values =====
   const OG_TITLE = "Diligram \u2014 Total Governance Control";
