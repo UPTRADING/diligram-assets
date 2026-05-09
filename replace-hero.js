@@ -199,32 +199,60 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   #dlg-content { padding: 80px 32px 0; }
   #dlg-proof { padding: 24px 32px 28px; }
 }
-/* Mobile */
+/* Mobile — flexbox column layout, proof bar in normal flow */
 @media (max-width: 767px) {
+  /* Hero is a flex column: [nav] [content] [proof] — NO absolute proof bar */
+  #dlg-hero {
+    height: auto !important;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  #dlg-nav { flex: 0 0 auto; padding: 16px 20px; }
   #dlg-nav-links { display: none; }
   #dlg-burger { display: flex; }
-  #dlg-nav { padding: 16px 20px; }
-  /* Content needs bottom clearance so CTA never overlaps the absolute proof bar */
-  #dlg-content { padding: 56px 20px 170px; }
-  #dlg-content h1 { font-size: 2rem; letter-spacing: -0.5px; margin: 0 0 14px; }
+
+  /* Content stretches to fill middle, vertically centred */
+  #dlg-content {
+    flex: 1 !important;
+    padding: 20px 20px 28px !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+
+  /* Proof bar: remove absolute, sit naturally at bottom of flex column */
+  #dlg-proof {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    background: rgba(5,15,30,.92) !important;
+    padding: 16px 20px 22px !important;
+  }
+  #dlg-proof-inner { grid-template-columns: repeat(2, 1fr); gap: 12px 8px; }
+
+  /* Typography */
+  #dlg-content h1 { font-size: 1.75rem; letter-spacing: -0.5px; margin: 0 0 12px; }
   .dlg-kicker {
+    display: block !important;
+    width: 100%;
     font-size: 10px;
-    letter-spacing: 1.2px;
+    letter-spacing: 1px;
     white-space: nowrap;
-    max-width: calc(100vw - 40px);
     overflow: hidden;
     text-overflow: ellipsis;
-    padding: 5px 10px;
-    margin-bottom: 14px;
+    padding: 4px 10px;
+    margin-bottom: 12px;
   }
-  .dlg-sub { font-size: 0.95rem; margin: 0 0 22px; }
-  .dlg-cta { padding: 13px 24px; font-size: 14px; }
-  #dlg-proof { padding: 16px 20px 20px; }
-  #dlg-proof-inner { grid-template-columns: repeat(2, 1fr); gap: 14px 12px; }
-  .dlg-stat-big { font-size: 20px; }
+  .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
+  .dlg-cta { padding: 12px 24px; font-size: 14px; }
+  .dlg-stat-big { font-size: 19px; }
   .dlg-stat-label { font-size: 10px; letter-spacing: 1px; }
 }
-@media (max-width: 380px) { .dlg-stat-big { font-size: 19px; } }
+@media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
 
 /* ── Global yellow CTA override ─────────────────────────────────────────── */
 /* Match any element with class exactly "bg-primary" (space after to avoid bg-primary/10 blobs) */
