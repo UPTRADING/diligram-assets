@@ -309,23 +309,61 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   box-shadow: none !important;
   padding: 0 !important;
 }
+/* Force the inner .wgcurrent div transparent (defaults to white) */
+.weglot-container .wgcurrent,
+.weglot-container .wg-li.wgcurrent,
+.weglot-container .wg-li {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 /* Hide the 'English' text label, keep only the flag */
-.weglot-container .wg-li a { font-size: 0 !important; line-height: 0 !important; padding: 0 !important; }
-.weglot-container .wg-li a::after { display: none !important; }
+.weglot-container .wg-li a {
+  font-size: 0 !important;
+  line-height: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+/* Kill the dropdown chevron/arrow (::after on .wgcurrent and aside) */
+.weglot-container .wgcurrent::after,
+.weglot-container .wg-li::after,
+.weglot-container .country-selector::after,
+.weglot-container aside.weglot_switcher::after,
+.weglot-container .wgcurrent::before,
+.weglot-container .wg-li::before {
+  display: none !important;
+  content: none !important;
+}
 .weglot-container .wg-flag {
-  width: 26px !important;
+  width: 100% !important;
   height: auto !important;
   display: block !important;
   border-radius: 3px !important;
   box-shadow: 0 2px 6px rgba(0,0,0,.25) !important;
 }
-/* Kill the dropdown caret / arrow on the closed selector */
-.weglot-container .country-selector::after,
-.weglot-container aside.weglot_switcher::after,
-.weglot-container .wgcurrent::after { display: none !important; content: none !important; }
 @media (max-width: 767px) {
-  .weglot-container { top: 58px !important; right: 22px !important; }
-  .weglot-container .wg-flag { width: 24px !important; }
+  /* Match hamburger geometry exactly: width 36px, right edge 54px from viewport edge,
+     and sit directly beneath it (hamburger bottom = 17+36 = 53, gap 7px → top 60) */
+  .weglot-container,
+  .weglot-container aside.weglot_switcher,
+  .weglot-container .wgcurrent,
+  .weglot-container .wg-li.wgcurrent,
+  .weglot-container .wg-li a {
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+    height: 24px !important;
+    min-height: 0 !important;
+    line-height: 0 !important;
+  }
+  .weglot-container { top: 60px !important; right: 54px !important; }
+  .weglot-container .wg-flag { width: 36px !important; height: 24px !important; object-fit: cover; }
 }
 
 
