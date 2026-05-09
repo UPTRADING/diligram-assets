@@ -602,8 +602,9 @@ export default async (request, context) => {
   // Lock html overflow until well after hydration completes
   var htmlEl = document.documentElement;
   htmlEl.style.overflow = 'hidden';
-  // Active scroll guard: yank back to top on any scroll event
-  function snapTop(){ if(window.scrollY > 0) _wst.call(window, 0, 0); }
+  // Active scroll guard: yank back to top on any scroll event (until released)
+  var _released = false;
+  function snapTop(){ if(!_released && window.scrollY > 0) _wst.call(window, 0, 0); }
   window.addEventListener('scroll', snapTop, { passive: true, capture: true });
   var _gi = setInterval(snapTop, 30);
   // MutationObserver: any time React re-adds id="challenge", strip it
@@ -622,8 +623,9 @@ export default async (request, context) => {
   }
   if(document.body) startObserver();
   else document.addEventListener('DOMContentLoaded', startObserver);
-  // Release after 8 seconds — keep guard alive long enough to outlast hydration AND lazy chunks
-  setTimeout(function(){
+  function release(){
+    if(_released) return;
+    _released = true;
     clearInterval(_gi);
     window.removeEventListener('scroll', snapTop, { capture: true });
     htmlEl.style.overflow = '';
@@ -631,8 +633,15 @@ export default async (request, context) => {
     window.scrollTo = _wst;
     window.scrollBy = _wsb;
     Element.prototype.scrollIntoView = _siv;
-    if(mo){ mo.disconnect(); mo = null; }
-  }, 8000);
+    // Keep MutationObserver alive — React may still re-mount sections later
+  }
+  // Release on ANY user gesture so the page becomes scrollable immediately
+  var gestureOpts = { passive: true, capture: true, once: true };
+  ['wheel','touchstart','keydown','mousedown','pointerdown'].forEach(function(ev){
+    window.addEventListener(ev, release, gestureOpts);
+  });
+  // Hard timeout fallback — release after 1.5s no matter what
+  setTimeout(release, 1500);
 })()</script>
 <style id="dlg-cover-style">
 #dlg-cover {
