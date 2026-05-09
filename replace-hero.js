@@ -9,6 +9,8 @@ const HERO_CSS = `<style id="dlg-hero-styles">
 /* Hide original hero section AND original nav */
 section[class*="h-\\[80vh\\]"] { display: none !important; }
 nav.z-30 { display: none !important; }
+/* Remove negative pull-up margin that overlapped the old h-[80vh] hero */
+section[class*="-mt-40"] { margin-top: 0 !important; }
 
 #dlg-hero, #dlg-hero * { box-sizing: border-box; }
 #dlg-hero a { text-decoration: none; color: inherit; }
@@ -54,8 +56,9 @@ nav.z-30 { display: none !important; }
   padding: 22px 56px;
 }
 #dlg-logo img {
-  width: 114px;
+  width: auto;
   height: 38px;
+  max-width: 220px;
   display: block;
   object-fit: contain;
   filter: brightness(0) invert(1);
@@ -218,7 +221,7 @@ var H =
 + '<input type="checkbox" id="dlg-mob-chk" aria-hidden="true">'
 + '<nav id="dlg-nav" aria-label="Main navigation">'
 +   '<a href="/" id="dlg-logo" aria-label="Diligram home">'
-+     '<img src="'+LOGO+'" alt="Diligram" width="114" height="38" loading="eager" style="width:114px;height:38px;object-fit:contain;filter:brightness(0) invert(1);display:block;">'
++     '<img src="'+LOGO+'" alt="Diligram" height="38" loading="eager" style="width:auto;max-width:220px;height:38px;object-fit:contain;filter:brightness(0) invert(1);display:block;">'
 +   '</a>'
 +   '<ul id="dlg-nav-links" role="list">'
 +     '<li><a href="/#challenge">Challenge</a></li>'
