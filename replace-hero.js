@@ -209,6 +209,25 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   .dlg-stat-big { font-size: 22px; }
 }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 19px; } }
+
+/* ── Global yellow CTA override ─────────────────────────────────────────── */
+button[class*="bg-primary"][class*="px-"],
+a[class*="bg-primary"][class*="px-"] {
+  background-color: #f5b700 !important;
+  background-image: none !important;
+  color: #0a1628 !important;
+  box-shadow: 0 8px 24px rgba(245,183,0,.30) !important;
+  transition: transform .2s, box-shadow .2s !important;
+}
+button[class*="bg-primary"][class*="px-"]:hover,
+a[class*="bg-primary"][class*="px-"]:hover {
+  background-color: #e0a800 !important;
+  box-shadow: 0 12px 32px rgba(245,183,0,.45) !important;
+  transform: translateY(-1px);
+}
+/* Keep SVG icons readable inside yellow buttons */
+button[class*="bg-primary"][class*="px-"] svg,
+a[class*="bg-primary"][class*="px-"] svg { color: #0a1628 !important; }
 </style>`;
 
 const INJECT_SCRIPT = `<script id="dlg-inject">(function(){
