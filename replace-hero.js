@@ -134,6 +134,10 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   color: #f5b700;
   font-weight: 700;
   margin-bottom: 18px;
+  padding: 6px 12px;
+  border: 1px solid rgba(245,183,0,.4);
+  border-radius: 4px;
+  background: rgba(245,183,0,.08);
 }
 #dlg-content h1 {
   font-size: clamp(2.2rem, 5vw, 4.6rem);
