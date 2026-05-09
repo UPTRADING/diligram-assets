@@ -202,11 +202,26 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
 @media (max-width: 767px) {
   #dlg-nav-links { display: none; }
   #dlg-burger { display: flex; }
-  #dlg-nav { padding: 18px 20px; }
-  #dlg-content { padding: 40px 20px 0; }
-  #dlg-proof { padding: 20px 20px 24px; }
-  #dlg-proof-inner { grid-template-columns: repeat(2, 1fr); gap: 20px 12px; }
-  .dlg-stat-big { font-size: 22px; }
+  #dlg-nav { padding: 16px 20px; }
+  /* Content needs bottom clearance so CTA never overlaps the absolute proof bar */
+  #dlg-content { padding: 56px 20px 170px; }
+  #dlg-content h1 { font-size: 2rem; letter-spacing: -0.5px; margin: 0 0 14px; }
+  .dlg-kicker {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    white-space: normal;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 5px 10px;
+    margin-bottom: 14px;
+  }
+  .dlg-sub { font-size: 0.95rem; margin: 0 0 22px; }
+  .dlg-cta { padding: 13px 24px; font-size: 14px; }
+  #dlg-proof { padding: 16px 20px 20px; }
+  #dlg-proof-inner { grid-template-columns: repeat(2, 1fr); gap: 14px 12px; }
+  .dlg-stat-big { font-size: 20px; }
+  .dlg-stat-label { font-size: 10px; letter-spacing: 1px; }
 }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 19px; } }
 
