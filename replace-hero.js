@@ -187,6 +187,16 @@ a[class*="bg-primary"][class*="gap-3"] svg { color: #0a1628 !important; }
 /* Inner arrow circle stays white background, dark icon */
 a[class*="bg-primary"][class*="gap-3"] span[class*="bg-white"] { background-color: #fff !important; }
 
+/* Yellow LinkedIn badges on team cards */
+a[aria-label^="LinkedIn profile of"][class*="bg-primary"] {
+  background-color: #f5b700 !important;
+  color: #0a1628 !important;
+}
+a[aria-label^="LinkedIn profile of"][class*="bg-primary"]:hover {
+  background-color: #e0a800 !important;
+}
+a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !important; fill: #0a1628 !important; }
+
 /* Proof bar — pinned to bottom like the mockup */
 #dlg-proof {
   position: absolute;
@@ -336,6 +346,48 @@ function inject(){
   if(cover){ cover.classList.add('dlg-cover-gone'); setTimeout(function(){ cover.parentNode && cover.parentNode.removeChild(cover); }, 400); }
   // Remove Antoine Amiel team card
   removeTeamMember('Antoine Amiel');
+  // Update titles & strip '>' tag lines
+  fixTeamCards();
+}
+
+function fixTeamCards(){
+  function tryFix(){
+    var done = false;
+    // Title updates: map name -> new title
+    var titleMap = {
+      'Leslie Golding': 'CMO and MD, UK',
+      'Darren Zimmer': 'COO and CPO'
+    };
+    var h3s = document.querySelectorAll('h3');
+    for(var i = 0; i < h3s.length; i++){
+      var name = h3s[i].textContent.trim();
+      if(titleMap[name]){
+        // Role div is the next sibling div
+        var roleDiv = h3s[i].nextElementSibling;
+        if(roleDiv && roleDiv.tagName === 'DIV' && roleDiv.textContent.trim() !== titleMap[name]){
+          roleDiv.textContent = titleMap[name];
+          done = true;
+        }
+      }
+    }
+    // Strip '> Foo' tag divs (the small uppercase gray-500 lines)
+    var tagDivs = document.querySelectorAll('div.uppercase.tracking-wide, div[class*="text-gray-500"][class*="uppercase"]');
+    for(var j = 0; j < tagDivs.length; j++){
+      var t = tagDivs[j].textContent.trim();
+      if(t.charAt(0) === '>' && tagDivs[j].style.display !== 'none'){
+        tagDivs[j].style.display = 'none';
+        done = true;
+      }
+    }
+    return done;
+  }
+  tryFix();
+  // Retry as Next.js hydration may overwrite
+  var tries = 0;
+  var iv = setInterval(function(){
+    tryFix();
+    if(++tries > 30) clearInterval(iv);
+  }, 200);
 }
 
 function removeTeamMember(name){
