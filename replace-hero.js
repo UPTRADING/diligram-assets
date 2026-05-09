@@ -211,23 +211,19 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 19px; } }
 
 /* ── Global yellow CTA override ─────────────────────────────────────────── */
-button[class*="bg-primary"][class*="px-"],
-a[class*="bg-primary"][class*="px-"] {
+/* Match any element with class exactly "bg-primary" (space after to avoid bg-primary/10 blobs) */
+[class*="bg-primary "] {
   background-color: #f5b700 !important;
   background-image: none !important;
   color: #0a1628 !important;
   box-shadow: 0 8px 24px rgba(245,183,0,.30) !important;
-  transition: transform .2s, box-shadow .2s !important;
+  transition: background-color .2s, transform .2s, box-shadow .2s !important;
 }
-button[class*="bg-primary"][class*="px-"]:hover,
-a[class*="bg-primary"][class*="px-"]:hover {
+[class*="bg-primary "]:hover {
   background-color: #e0a800 !important;
   box-shadow: 0 12px 32px rgba(245,183,0,.45) !important;
-  transform: translateY(-1px);
 }
-/* Keep SVG icons readable inside yellow buttons */
-button[class*="bg-primary"][class*="px-"] svg,
-a[class*="bg-primary"][class*="px-"] svg { color: #0a1628 !important; }
+[class*="bg-primary "] svg { color: #0a1628 !important; }
 </style>`;
 
 const INJECT_SCRIPT = `<script id="dlg-inject">(function(){
@@ -289,6 +285,9 @@ function inject(){
   var wrap = document.createElement('div');
   wrap.innerHTML = H;
   old.parentNode.insertBefore(wrap.firstElementChild, old);
+  // Force scroll to top and clear any hash the Next.js router added
+  if(window.history && window.history.replaceState) window.history.replaceState(null,'','/');
+  window.scrollTo(0,0);
 }
 
 if(document.readyState === 'complete'){
