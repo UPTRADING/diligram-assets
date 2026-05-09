@@ -529,11 +529,30 @@ function removeTeamMember(name){
   }, 200);
 }
 
-if(document.readyState === 'complete'){
-  setTimeout(inject, 100);
-} else {
-  window.addEventListener('load', function(){ setTimeout(inject, 100); });
+// Try to inject as soon as possible — DOMContentLoaded, load, AND a MutationObserver on body
+function tryInjectLoop(){
+  if(document.getElementById('dlg-hero')) return;
+  inject();
+  if(!document.getElementById('dlg-hero')){
+    // Target section not yet in DOM — observe and retry
+    if(document.body){
+      var mo = new MutationObserver(function(){
+        if(document.getElementById('dlg-hero')){ mo.disconnect(); return; }
+        inject();
+        if(document.getElementById('dlg-hero')) mo.disconnect();
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+      // Stop observing after 8s
+      setTimeout(function(){ mo.disconnect(); }, 8000);
+    }
+  }
 }
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', tryInjectLoop);
+} else {
+  tryInjectLoop();
+}
+window.addEventListener('load', function(){ setTimeout(tryInjectLoop, 50); });
 })();</script>`;
 
 export default async (request, context) => {
@@ -624,6 +643,8 @@ export default async (request, context) => {
   else document.addEventListener('DOMContentLoaded', startObserver);
   function release(){
     if(_released) return;
+    // Don't release until our hero has actually injected (otherwise page sits at #challenge)
+    if(!document.getElementById('dlg-hero')) return;
     _released = true;
     clearInterval(_gi);
     window.removeEventListener('scroll', snapTop, { capture: true });
@@ -634,17 +655,24 @@ export default async (request, context) => {
     Element.prototype.scrollIntoView = _siv;
     // Keep MutationObserver alive — React may still re-mount sections later
   }
-  // Release on ANY user gesture so the page becomes scrollable immediately
-  var gestureOpts = { passive: true, capture: true, once: true };
-  ['wheel','touchstart','keydown','mousedown','pointerdown'].forEach(function(ev){
+  // Release on actual user scroll intent (wheel/keydown), NOT on touchstart (fires on any tap)
+  var gestureOpts = { passive: true, capture: true };
+  ['wheel','keydown'].forEach(function(ev){
     window.addEventListener(ev, release, gestureOpts);
   });
-  // Hard timeout fallback — release after 1.5s no matter what
-  setTimeout(release, 1500);
+  // Poll until hero is injected, then auto-release
+  var _ri = setInterval(function(){
+    if(document.getElementById('dlg-hero')){
+      release();
+      clearInterval(_ri);
+    }
+  }, 50);
+  // Hard fallback — release no later than 5s even if hero never injects
+  setTimeout(function(){ clearInterval(_ri); _released || (function(){ _released = true; clearInterval(_gi); window.removeEventListener('scroll', snapTop, { capture: true }); htmlEl.style.overflow = ''; if(document.body) document.body.style.overflow = ''; window.scrollTo = _wst; window.scrollBy = _wsb; Element.prototype.scrollIntoView = _siv; })(); }, 5000);
 })()</script>
 <style id="dlg-cover-style">
 #dlg-cover {
-  position: fixed; inset: 0; z-index: 99999;
+  position: fixed; inset: 0; z-index: 2147483647;
   background: #0a1628;
   transition: opacity 0.35s ease;
 }
