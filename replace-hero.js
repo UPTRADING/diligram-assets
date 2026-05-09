@@ -355,6 +355,10 @@ export default async (request, context) => {
   }
   let html = await response.text();
   html = html.replace(/<title>[^<]*<\/title>/, "<title>Diligram \u2014 Total Governance Control</title>");
+  // Server-side: nuke the #challenge anchor so the browser has nothing to scroll to
+  // This kills iOS Safari's native hash scroll before any JS runs
+  html = html.replace(/\sid="challenge"/g, ' id="challenge-disabled"');
+  html = html.replace(/href=["']\/?#challenge["']/g, 'href="#"');
   // Inject hash-killer + dark cover overlay before any other scripts
   // The dark cover hides the flash of #challenge-at-top while our hero injects
   const HASH_KILLER = `<script>(function(){
