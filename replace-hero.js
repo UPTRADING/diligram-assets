@@ -262,8 +262,9 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   #dlg-proof-inner { grid-template-columns: repeat(2, 1fr); gap: 12px 8px; }
 
   /* Typography */
-  #dlg-content h1 { font-size: 2.2rem; letter-spacing: -0.5px; margin: 0 0 12px; }
+  #dlg-content h1 { font-size: 2.6rem; line-height: 1.02; letter-spacing: -1.2px; margin: 0 0 14px; }
   .dlg-kicker {
+    align-self: flex-start !important;
     display: inline-block !important;
     width: auto !important;
     max-width: calc(100vw - 40px);
@@ -281,6 +282,14 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   .dlg-stat-label { font-size: 10px; letter-spacing: 1px; }
 }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
+
+/* Hide Weglot translate widget on mobile (overlaps proof bar, off-design) */
+@media (max-width: 767px) {
+  .country-selector,
+  .weglot-container,
+  [class*="weglot"],
+  aside[aria-label*="Language"] { display: none !important; }
+}
 
 
 </style>`;
