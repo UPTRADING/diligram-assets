@@ -170,6 +170,23 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
 }
 .dlg-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(245,183,0,.45); }
 
+/* Yellow CTA buttons — target only action buttons (have gap-3 class), NOT LinkedIn badge circles */
+a[class*="bg-primary"][class*="gap-3"] {
+  background-color: #f5b700 !important;
+  background-image: none !important;
+  color: #0a1628 !important;
+  box-shadow: 0 8px 24px rgba(245,183,0,.30) !important;
+  transition: background-color .2s, transform .2s, box-shadow .2s !important;
+}
+a[class*="bg-primary"][class*="gap-3"]:hover {
+  background-color: #e0a800 !important;
+  box-shadow: 0 12px 32px rgba(245,183,0,.45) !important;
+}
+a[class*="bg-primary"][class*="gap-3"] span,
+a[class*="bg-primary"][class*="gap-3"] svg { color: #0a1628 !important; }
+/* Inner arrow circle stays white background, dark icon */
+a[class*="bg-primary"][class*="gap-3"] span[class*="bg-white"] { background-color: #fff !important; }
+
 /* Proof bar — pinned to bottom like the mockup */
 #dlg-proof {
   position: absolute;
@@ -317,6 +334,26 @@ function inject(){
   // Remove the dark cover overlay
   var cover = document.getElementById('dlg-cover');
   if(cover){ cover.classList.add('dlg-cover-gone'); setTimeout(function(){ cover.parentNode && cover.parentNode.removeChild(cover); }, 400); }
+  // Remove Antoine Amiel team card
+  removeTeamMember('Antoine Amiel');
+}
+
+function removeTeamMember(name){
+  function tryRemove(){
+    var imgs = document.querySelectorAll('img[alt="' + name + '"]');
+    if(!imgs.length) return false;
+    for(var i = 0; i < imgs.length; i++){
+      var card = imgs[i].closest('[data-aos="fade-up"]') || imgs[i].closest('.group');
+      if(card && card.parentNode){ card.parentNode.removeChild(card); }
+    }
+    return true;
+  }
+  if(tryRemove()) return;
+  // Retry as Next.js may render later
+  var tries = 0;
+  var iv = setInterval(function(){
+    if(tryRemove() || ++tries > 30) clearInterval(iv);
+  }, 200);
 }
 
 if(document.readyState === 'complete'){
@@ -349,30 +386,26 @@ export default async (request, context) => {
   try{ Object.keys(sessionStorage).forEach(function(k){
     if(/next|scroll/i.test(k)) sessionStorage.removeItem(k);
   }); }catch(e){}
-  // Patch scrollIntoView
+  // Patch scrollIntoView and scrollTo so Next.js can't auto-scroll on hydration
   var _siv = Element.prototype.scrollIntoView;
   Element.prototype.scrollIntoView = function(){};
-  setTimeout(function(){ Element.prototype.scrollIntoView = _siv; }, 4000);
-  // Intercept window.scrollTo — block any deep-scroll for first 4s
   var _wst = window.scrollTo;
   window.scrollTo = function(x, y){
     if((typeof y === 'number' ? y : (x && x.top) || 0) > 80) return;
     _wst.apply(window, arguments);
   };
-  setTimeout(function(){ window.scrollTo = _wst; }, 4000);
-  // Lock body scroll immediately — releases after hero is established
+  // Lock scroll briefly so nothing can scroll us off the hero
   document.documentElement.style.overflow = 'hidden';
-  document.documentElement.style.position = 'fixed';
-  document.documentElement.style.width = '100%';
-  // Guard interval: yank back to top if something scrolls us down
+  // Guard interval: yank back to top if something sneaks past
   var _gi = setInterval(function(){ if(window.scrollY > 80) _wst.call(window,0,0); }, 50);
-  setTimeout(function(){ clearInterval(_gi); }, 4000);
-  // Release scroll lock after Next.js hydration settles
   setTimeout(function(){
+    clearInterval(_gi);
     document.documentElement.style.overflow = '';
-    document.documentElement.style.position = '';
-    document.documentElement.style.width = '';
-  }, 800);
+    if (document.body) document.body.style.overflow = '';
+    // Restore real scroll APIs so user-clicked hash links work
+    window.scrollTo = _wst;
+    Element.prototype.scrollIntoView = _siv;
+  }, 1500);
 })()</script>
 <style id="dlg-cover-style">
 #dlg-cover {
