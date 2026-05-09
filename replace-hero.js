@@ -23,6 +23,7 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   height: 100vh;
   min-height: 720px;
   overflow: hidden;
+  overflow-x: hidden;
   background: #0a1628;
   font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
   color: #fff;
@@ -208,9 +209,9 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   #dlg-content h1 { font-size: 2rem; letter-spacing: -0.5px; margin: 0 0 14px; }
   .dlg-kicker {
     font-size: 10px;
-    letter-spacing: 1.5px;
-    white-space: normal;
-    max-width: 100%;
+    letter-spacing: 1.2px;
+    white-space: nowrap;
+    max-width: calc(100vw - 40px);
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 5px 10px;
