@@ -237,8 +237,9 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
   /* Typography */
   #dlg-content h1 { font-size: 2.2rem; letter-spacing: -0.5px; margin: 0 0 12px; }
   .dlg-kicker {
-    display: block !important;
-    width: 100%;
+    display: inline-block !important;
+    width: auto !important;
+    max-width: calc(100vw - 40px);
     font-size: 10px;
     letter-spacing: 1px;
     white-space: nowrap;
@@ -248,7 +249,7 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
     margin-bottom: 12px;
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
-  .dlg-cta { padding: 12px 24px; font-size: 14px; }
+  .dlg-cta { padding: 12px 24px; font-size: 14px; align-self: flex-start; }
   .dlg-stat-big { font-size: 19px; }
   .dlg-stat-label { font-size: 10px; letter-spacing: 1px; }
 }
@@ -257,6 +258,8 @@ section[class*="-mt-40"] { margin-top: 0 !important; }
 /* ── Global yellow CTA override ─────────────────────────────────────────── */
 /* Match any element with class exactly "bg-primary" (space after to avoid bg-primary/10 blobs) */
 [class*="bg-primary "] {
+  min-width: 190px !important;
+  justify-content: center !important;
   background-color: #f5b700 !important;
   background-image: none !important;
   color: #0a1628 !important;
