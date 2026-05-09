@@ -269,7 +269,7 @@ var H =
 + '<div id="dlg-proof" aria-label="Key metrics">'
 +   '<div id="dlg-proof-inner">'
 +     '<div><span class="dlg-stat-big">60K+</span><span class="dlg-stat-label">Staff on live deployments</span></div>'
-+     '<div><span class="dlg-stat-big">76\u219898%</span><span class="dlg-stat-label">Compliance in 6 months</span></div>'
++     '<div><span class="dlg-stat-big">76\u219798%</span><span class="dlg-stat-label">Compliance in 6 months</span></div>'
 +     '<div><span class="dlg-stat-big">\u00a31.8M+</span><span class="dlg-stat-label">Documented savings</span></div>'
 +     '<div><span class="dlg-stat-big">5</span><span class="dlg-stat-label">Regulated industries served</span></div>'
 +   '</div>'
@@ -286,8 +286,10 @@ function inject(){
   wrap.innerHTML = H;
   old.parentNode.insertBefore(wrap.firstElementChild, old);
   // Force scroll to top and clear any hash the Next.js router added
-  if(window.history && window.history.replaceState) window.history.replaceState(null,'','/');
+  if(window.history && window.history.replaceState) window.history.replaceState(null,'',window.location.pathname);
   window.scrollTo(0,0);
+  setTimeout(function(){window.scrollTo(0,0);},150);
+  setTimeout(function(){window.scrollTo(0,0);},400);
 }
 
 if(document.readyState === 'complete'){
@@ -307,6 +309,17 @@ export default async (request, context) => {
   }
   let html = await response.text();
   html = html.replace(/<title>[^<]*<\/title>/, "<title>Diligram \u2014 Total Governance Control</title>");
+  // Inject hash-killer before any other scripts so it runs before Next.js hydration
+  const HASH_KILLER = `<script>(function(){
+  if(window.location.hash) history.replaceState(null,'',window.location.pathname);
+  if('scrollRestoration' in history) history.scrollRestoration='manual';
+  window.scrollTo(0,0);
+  // Re-assert on DOMContentLoaded and load in case Next.js fights back
+  ['DOMContentLoaded','load'].forEach(function(ev){
+    window.addEventListener(ev,function(){window.scrollTo(0,0);});
+  });
+})()</script>`;
+  html = html.replace("<head>", "<head>" + HASH_KILLER);
   html = html.replace("</head>", HERO_CSS + "</head>");
   html = html.replace("</body>", INJECT_SCRIPT + "</body>");
   const headers = new Headers(response.headers);
