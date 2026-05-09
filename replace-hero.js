@@ -286,88 +286,31 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
 }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
 
-/* Weglot translate widget — DESKTOP UNTOUCHED.
-   Mobile-only: shrink to flag-only, transparent, position under hamburger. */
-@media (max-width: 767px) {
-  .weglot-container {
-    position: fixed !important;
-    top: 60px !important;
-    right: 20px !important;
-    bottom: auto !important;
-    left: auto !important;
-    z-index: 60 !important;
-    background: transparent !important;
-    padding-bottom: 8px !important;   /* transparent breathing room below */
-  }
-  /* Lock all flag containers (current + dropdown items) to 36x36 — match hamburger */
-  .weglot-container,
-  .weglot-container aside.weglot_switcher,
-  .weglot-container .wgcurrent,
-  .weglot-container .wg-li,
-  .weglot-container .wg-li a,
-  .weglot-container #weglot-listbox,
-  .weglot-container #weglot-listbox li {
-    width: 36px !important;
-    min-width: 36px !important;
-    max-width: 36px !important;
-  }
-  .weglot-container .wgcurrent,
-  .weglot-container .wg-li,
-  .weglot-container .wg-li a {
-    height: 36px !important;
-    min-height: 36px !important;
-    line-height: 0 !important;
-  }
-  /* Make every layer transparent and reset all chrome */
-  .weglot-container .country-selector,
-  .weglot-container aside.weglot_switcher,
-  .weglot-container .wgcurrent,
-  .weglot-container .wg-li,
-  .weglot-container #weglot-listbox,
-  .weglot-container #weglot-listbox li {
-    position: static !important;
-    background: transparent !important;
-    background-color: transparent !important;
-    border: 0 !important;
-    box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    list-style: none !important;
-  }
-  /* Stack: current flag, then 4px gap, then FR flag below it */
-  .weglot-container #weglot-listbox {
-    margin-top: 4px !important;
-  }
-  .weglot-container #weglot-listbox li + li { margin-top: 4px !important; }
-  /* Hide all language text labels (English, Français) */
-  .weglot-container .wg-li a {
-    font-size: 0 !important;
-    padding: 0 !important;
-    background: transparent !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: transparent !important;
-  }
-  /* Kill any chevrons / arrows */
-  .weglot-container .wgcurrent::after,
-  .weglot-container .wg-li::after,
-  .weglot-container .country-selector::after,
-  .weglot-container aside.weglot_switcher::after,
-  .weglot-container .wgcurrent::before,
-  .weglot-container .wg-li::before {
-    display: none !important;
-    content: none !important;
-  }
-  .weglot-container .wg-flag {
-    width: 36px !important;
-    height: 36px !important;
-    object-fit: cover !important;
-    display: block !important;
-    border-radius: 4px !important;
-    box-shadow: 0 2px 6px rgba(0,0,0,.25) !important;
-  }
+/* Weglot translate widget — DESKTOP UNTOUCHED elsewhere; on the home page we hide it
+   entirely and provide our own inline switcher inside the nav (desktop) and burger (mobile). */
+.weglot-container { display: none !important; }
+
+/* Inline language switcher — sits in the nav next to Contact */
+.dlg-lang-switch { display: inline-flex; align-items: center; gap: 8px; margin-left: 18px; }
+.dlg-lang-switch a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 18px; padding: 0; border-radius: 3px;
+  overflow: hidden; opacity: 0.55; transition: opacity .2s, transform .2s;
+  background: transparent;
 }
+.dlg-lang-switch a:hover { opacity: 1; transform: translateY(-1px); }
+.dlg-lang-switch a.dlg-lang-current { opacity: 1; cursor: default; pointer-events: none; box-shadow: 0 0 0 2px rgba(245,183,0,.7); }
+.dlg-lang-switch img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Mobile burger menu version — bigger flags, centered row */
+#dlg-mob-lang { display: flex; gap: 14px; justify-content: center; margin-top: 28px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,.09); }
+#dlg-mob-lang a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 30px; border-radius: 4px; overflow: hidden;
+  opacity: 0.55; transition: opacity .2s, transform .2s; background: transparent;
+}
+#dlg-mob-lang a.dlg-lang-current { opacity: 1; cursor: default; pointer-events: none; box-shadow: 0 0 0 2px rgba(245,183,0,.8); }
+#dlg-mob-lang img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 
 </style>`;
@@ -390,6 +333,10 @@ var H =
 +     '<li><a href="/#products">Products</a></li>'
 +     '<li><a href="/#team">Team</a></li>'
 +     '<li><a href="/#contact">Contact</a></li>'
++     '<li class="dlg-lang-switch" aria-label="Language">'
++       '<a href="https://www.diligram.com/" class="dlg-lang-en" aria-label="English" hreflang="en"><img src="https://cdn.weglot.com/flags/rectangle_mat/gb.svg" alt="English"></a>'
++       '<a href="https://fr.diligram.com/" class="dlg-lang-fr" aria-label="Français" hreflang="fr"><img src="https://cdn.weglot.com/flags/rectangle_mat/fr.svg" alt="Français"></a>'
++     '</li>'
 +   '</ul>'
 +   '<label for="dlg-mob-chk" id="dlg-burger" aria-label="Open menu"><span></span><span></span><span></span></label>'
 + '</nav>'
@@ -402,7 +349,10 @@ var H =
 +     '<li><a href="/#team">Team</a></li>'
 +     '<li><a href="/#contact">Contact</a></li>'
 +   '</ul>'
-+   '<div id="dlg-mob-cta-wrap"><a href="/#solution" id="dlg-mob-cta">Explore Solutions</a></div>'
++   '<div id="dlg-mob-lang" aria-label="Language">'
++     '<a href="https://www.diligram.com/" class="dlg-lang-en" aria-label="English" hreflang="en"><img src="https://cdn.weglot.com/flags/rectangle_mat/gb.svg" alt="English"></a>'
++     '<a href="https://fr.diligram.com/" class="dlg-lang-fr" aria-label="Français" hreflang="fr"><img src="https://cdn.weglot.com/flags/rectangle_mat/fr.svg" alt="Français"></a>'
++   '</div>'
 + '</div>'
 + '<div id="dlg-content">'
 +   '<span class="dlg-kicker">Diligram &nbsp;&middot;&nbsp; Powering Regulated Worlds</span>'
@@ -439,6 +389,11 @@ function inject(){
   removeTeamMember('Antoine Amiel');
   // Update titles & strip '>' tag lines
   fixTeamCards();
+  // Mark current language flag
+  var isFR = location.hostname.indexOf('fr.') === 0;
+  var curSel = isFR ? '.dlg-lang-fr' : '.dlg-lang-en';
+  var curEls = document.querySelectorAll(curSel);
+  for(var k = 0; k < curEls.length; k++){ curEls[k].classList.add('dlg-lang-current'); }
 }
 
 function fixTeamCards(){
