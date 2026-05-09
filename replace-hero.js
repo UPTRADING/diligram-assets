@@ -6,8 +6,9 @@ export const config = { path: "/" };
 const BG = "https://cdn.jsdelivr.net/gh/UPTRADING/diligram-assets@main/arch5_hero.jpg";
 
 const HERO_CSS = `<style id="dlg-hero-styles">
-/* Hide original hero */
+/* Hide original hero section AND original nav */
 section[class*="h-\\[80vh\\]"] { display: none !important; }
+nav[class*="z-30"][class*="justify-between"] { display: none !important; }
 
 #dlg-hero, #dlg-hero * { box-sizing: border-box; }
 #dlg-hero a { text-decoration: none; color: inherit; }
