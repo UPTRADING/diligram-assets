@@ -284,14 +284,22 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
 @media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
 
 /* Reposition Weglot translate widget — default bottom-left overlaps proof bar.
-   Move to top-right corner, compact, on top of nav */
+   Move below nav bar at top-right, compact. Override inner aside (also fixed). */
 .weglot-container {
   position: fixed !important;
-  top: 14px !important;
-  right: 64px !important;   /* clear of hamburger menu (~48px wide + margin) */
+  top: 78px !important;       /* clear nav (~70px) */
+  right: 12px !important;
   bottom: auto !important;
   left: auto !important;
   z-index: 60 !important;
+  width: auto !important;
+  height: auto !important;
+}
+.weglot-container .country-selector,
+.weglot-container aside.weglot_switcher {
+  position: static !important;  /* inherit parent placement */
+  top: auto !important; right: auto !important; bottom: auto !important; left: auto !important;
+  margin: 0 !important;
 }
 .weglot-container .country-selector,
 .weglot-container .wg-li {
@@ -304,10 +312,7 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   vertical-align: middle !important;
 }
 @media (max-width: 767px) {
-  .weglot-container {
-    top: 10px !important;
-    right: 56px !important;  /* still clear of mobile hamburger */
-  }
+  .weglot-container { top: 76px !important; right: 10px !important; }
   .weglot-container .country-selector,
   .weglot-container .wg-li { font-size: 11px !important; }
   .weglot-container .wg-flag { width: 18px !important; }
