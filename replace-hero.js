@@ -12,6 +12,33 @@ nav.z-30 { display: none !important; }
 /* Remove negative pull-up margin that overlapped the old h-[80vh] hero */
 section[class*="-mt-40"] { margin-top: 0 !important; }
 
+/* === BODY HIDER (CSS-only, no JS, no React-reconcilable nodes) === */
+/* Until dlg-hero is in the DOM, paint the page dark and hide ALL body content. */
+/* Uses :has() — supported in Chrome 105+, Safari 15.4+, Firefox 121+ (Dec 2023). */
+html:not(:has(#dlg-hero)) { background: #0a1628 !important; }
+html:not(:has(#dlg-hero)) body { background: #0a1628 !important; }
+html:not(:has(#dlg-hero)) body > * { visibility: hidden !important; }
+/* Show a centred spinner painted via ::before on <html> (no DOM node needed) */
+html:not(:has(#dlg-hero))::before {
+  content: "";
+  position: fixed; inset: 0; z-index: 2147483647;
+  background:
+    radial-gradient(circle at center, transparent 22px, transparent 24px) ,
+    #0a1628;
+  pointer-events: none;
+}
+html:not(:has(#dlg-hero))::after {
+  content: "";
+  position: fixed; top: 50%; left: 50%; width: 42px; height: 42px;
+  margin: -21px 0 0 -21px;
+  border: 3px solid rgba(255,255,255,.15);
+  border-top-color: #f5b700;
+  border-radius: 50%;
+  z-index: 2147483647;
+  animation: dlgspin 0.8s linear infinite;
+}
+@keyframes dlgspin { to { transform: rotate(360deg); } }
+
 #dlg-hero, #dlg-hero * { box-sizing: border-box; }
 #dlg-hero a { text-decoration: none; color: inherit; }
 #dlg-hero ul { list-style: none; margin: 0; padding: 0; }
