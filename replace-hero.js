@@ -389,11 +389,30 @@ function inject(){
   removeTeamMember('Antoine Amiel');
   // Update titles & strip '>' tag lines
   fixTeamCards();
-  // Mark current language flag
+  // Mark current language flag and wire click to Weglot's own links (preserve path/state)
   var isFR = location.hostname.indexOf('fr.') === 0;
   var curSel = isFR ? '.dlg-lang-fr' : '.dlg-lang-en';
   var curEls = document.querySelectorAll(curSel);
   for(var k = 0; k < curEls.length; k++){ curEls[k].classList.add('dlg-lang-current'); }
+  // Hijack our flag clicks: defer to Weglot's real language link (correct host + path)
+  function bindLangClick(sel, weglotId){
+    var els = document.querySelectorAll(sel);
+    for(var i = 0; i < els.length; i++){
+      els[i].addEventListener('click', function(ev){
+        ev.preventDefault();
+        var real = document.getElementById(weglotId);
+        if(real && real.getAttribute('href') && real.getAttribute('href') !== '#'){
+          window.location.href = real.getAttribute('href');
+        } else {
+          // Fallback: navigate to other host preserving path
+          var path = location.pathname + location.search + location.hash;
+          window.location.href = (weglotId === 'weglot-language-fr' ? 'https://fr.diligram.com' : 'https://www.diligram.com') + path;
+        }
+      });
+    }
+  }
+  bindLangClick('.dlg-lang-en:not(.dlg-lang-current)', 'weglot-language-en');
+  bindLangClick('.dlg-lang-fr:not(.dlg-lang-current)', 'weglot-language-fr');
 }
 
 function fixTeamCards(){
