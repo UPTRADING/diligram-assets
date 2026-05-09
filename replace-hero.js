@@ -8,7 +8,7 @@ const BG = "https://cdn.jsdelivr.net/gh/UPTRADING/diligram-assets@main/arch5_her
 const HERO_CSS = `<style id="dlg-hero-styles">
 /* Hide original hero section AND original nav */
 section[class*="h-\\[80vh\\]"] { display: none !important; }
-nav[class*="z-30"][class*="justify-between"] { display: none !important; }
+nav.z-30 { display: none !important; }
 
 #dlg-hero, #dlg-hero * { box-sizing: border-box; }
 #dlg-hero a { text-decoration: none; color: inherit; }
@@ -54,8 +54,8 @@ nav[class*="z-30"][class*="justify-between"] { display: none !important; }
   padding: 22px 56px;
 }
 #dlg-logo img {
+  width: 114px;
   height: 38px;
-  width: auto;
   display: block;
   object-fit: contain;
   filter: brightness(0) invert(1);
@@ -123,6 +123,7 @@ nav[class*="z-30"][class*="justify-between"] { display: none !important; }
 }
 .dlg-kicker {
   display: inline-block;
+  white-space: nowrap;
   font-size: 12px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
@@ -217,7 +218,7 @@ var H =
 + '<input type="checkbox" id="dlg-mob-chk" aria-hidden="true">'
 + '<nav id="dlg-nav" aria-label="Main navigation">'
 +   '<a href="/" id="dlg-logo" aria-label="Diligram home">'
-+     '<img src="'+LOGO+'" alt="Diligram" height="38" loading="eager" style="height:38px;width:auto;object-fit:contain;filter:brightness(0) invert(1);">'
++     '<img src="'+LOGO+'" alt="Diligram" width="114" height="38" loading="eager" style="width:114px;height:38px;object-fit:contain;filter:brightness(0) invert(1);display:block;">'
 +   '</a>'
 +   '<ul id="dlg-nav-links" role="list">'
 +     '<li><a href="/#challenge">Challenge</a></li>'
