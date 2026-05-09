@@ -311,13 +311,33 @@ export default async (request, context) => {
   html = html.replace(/<title>[^<]*<\/title>/, "<title>Diligram \u2014 Total Governance Control</title>");
   // Inject hash-killer before any other scripts so it runs before Next.js hydration
   const HASH_KILLER = `<script>(function(){
+  // Kill hash in URL immediately
   if(window.location.hash) history.replaceState(null,'',window.location.pathname);
+  // Disable browser scroll restoration
   if('scrollRestoration' in history) history.scrollRestoration='manual';
-  window.scrollTo(0,0);
-  // Re-assert on DOMContentLoaded and load in case Next.js fights back
-  ['DOMContentLoaded','load'].forEach(function(ev){
-    window.addEventListener(ev,function(){window.scrollTo(0,0);});
-  });
+  // Clear any Next.js scroll-position sessionStorage keys
+  try{ Object.keys(sessionStorage).forEach(function(k){
+    if(/next|scroll/i.test(k)) sessionStorage.removeItem(k);
+  }); }catch(e){}
+  // Block scrollIntoView (used by browser hash nav) for 3s
+  var _siv = Element.prototype.scrollIntoView;
+  Element.prototype.scrollIntoView = function(){ /* blocked during hydration */ };
+  // Block scrollTo > 0 for 3s
+  var _sto = window.scrollTo.bind(window);
+  window.scrollTo = function(x,y){
+    var top = (typeof x==='object'&&x) ? (x.top||0) : (y||0);
+    if(top > 0) return;
+    _sto(0,0);
+  };
+  // Release block after 3s and restore natives
+  setTimeout(function(){
+    Element.prototype.scrollIntoView = _siv;
+    window.scrollTo = _sto;
+  }, 3000);
+  // Enforce top at key moments
+  function goTop(){ _sto(0,0); }
+  document.addEventListener('DOMContentLoaded', goTop);
+  window.addEventListener('load', goTop);
 })()</script>`;
   html = html.replace("<head>", "<head>" + HASH_KILLER);
   html = html.replace("</head>", HERO_CSS + "</head>");
