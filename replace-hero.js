@@ -283,12 +283,34 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
 }
 @media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
 
-/* Hide Weglot translate widget on mobile (overlaps proof bar, off-design) */
+/* Reposition Weglot translate widget — default bottom-left overlaps proof bar.
+   Move to top-right corner, compact, on top of nav */
+.weglot-container {
+  position: fixed !important;
+  top: 14px !important;
+  right: 64px !important;   /* clear of hamburger menu (~48px wide + margin) */
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 60 !important;
+}
+.weglot-container .country-selector,
+.weglot-container .wg-li {
+  font-size: 12px !important;
+  line-height: 1 !important;
+}
+.weglot-container .wg-flag {
+  width: 20px !important;
+  height: auto !important;
+  vertical-align: middle !important;
+}
 @media (max-width: 767px) {
-  .country-selector,
-  .weglot-container,
-  [class*="weglot"],
-  aside[aria-label*="Language"] { display: none !important; }
+  .weglot-container {
+    top: 10px !important;
+    right: 56px !important;  /* still clear of mobile hamburger */
+  }
+  .weglot-container .country-selector,
+  .weglot-container .wg-li { font-size: 11px !important; }
+  .weglot-container .wg-flag { width: 18px !important; }
 }
 
 
