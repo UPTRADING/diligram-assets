@@ -547,6 +547,33 @@ export default async (request, context) => {
   }
   let html = await response.text();
   html = html.replace(/<title>[^<]*<\/title>/, "<title>Diligram \u2014 Total Governance Control</title>");
+
+  // ===== Social preview meta (OG + Twitter) — overwrite all stale values =====
+  const OG_TITLE = "Diligram \u2014 Total Governance Control";
+  const OG_DESC  = "The award-winning AI-driven platform giving leaders real-time visibility into who has received, engaged with, and acted on critical information \u2014 across every frontline.";
+  const OG_IMAGE = "https://cdn.jsdelivr.net/gh/UPTRADING/diligram-assets@main/arch5_hero.jpg";
+  const setMeta = (attr, name, content) => {
+    const re = new RegExp('<meta\\s+' + attr + '=["\\\']' + name.replace(/[:\-]/g, '\\$&') + '["\\\'][^>]*>', 'i');
+    if (re.test(html)) {
+      html = html.replace(re, `<meta ${attr}="${name}" content="${content.replace(/"/g, '&quot;')}"/>`);
+    } else {
+      html = html.replace('</head>', `<meta ${attr}="${name}" content="${content.replace(/"/g, '&quot;')}"/></head>`);
+    }
+  };
+  setMeta('name',     'description',          OG_DESC);
+  setMeta('property', 'og:title',             OG_TITLE);
+  setMeta('property', 'og:description',       OG_DESC);
+  setMeta('property', 'og:image',             OG_IMAGE);
+  setMeta('property', 'og:image:width',       '1920');
+  setMeta('property', 'og:image:height',      '1080');
+  setMeta('property', 'og:image:alt',         OG_TITLE);
+  setMeta('property', 'og:url',               'https://www.diligram.com/');
+  setMeta('property', 'og:site_name',         'Diligram');
+  setMeta('name',     'twitter:card',         'summary_large_image');
+  setMeta('name',     'twitter:title',        OG_TITLE);
+  setMeta('name',     'twitter:description',  OG_DESC);
+  setMeta('name',     'twitter:image',        OG_IMAGE);
+  setMeta('name',     'twitter:image:alt',    OG_TITLE);
   // Server-side: nuke the #challenge anchor so the browser has nothing to scroll to
   // Handles both raw HTML attributes AND escaped JSON inside __NEXT_DATA__ etc.
   html = html.replace(/(\s|\\")id="challenge"/g, '$1id="challenge-disabled"');
