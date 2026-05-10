@@ -843,5 +843,10 @@ export default async (request, context) => {
   html = html.replace("</body>", INJECT_SCRIPT + "</body>");
   const headers = new Headers(response.headers);
   headers.delete("content-length");
+  // Cache the rewritten HTML at Netlify's edge so 99% of visitors skip this function.
+  // s-maxage=300 = 5min CDN cache; SWR=86400 = serve stale up to 1 day while revalidating.
+  // "durable" stores it in Netlify's persistent cache layer (long-tail hits stay fast).
+  headers.set("Cache-Control", "public, max-age=0, must-revalidate");
+  headers.set("Netlify-CDN-Cache-Control", "public, durable, s-maxage=300, stale-while-revalidate=86400");
   return new Response(html, { status: response.status, headers });
 };
