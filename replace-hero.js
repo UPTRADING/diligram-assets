@@ -685,6 +685,23 @@ export default async (request, context) => {
       .replace(/\sloading=("|')[^"']*\1/gi, ' loading="lazy"')
       .replace(/\sfetchPriority=("|')[^"']*\1/gi, ' fetchpriority="low"');
   });
+
+  // === Strip oversized srcset variants (w=2048, w=3840) — no one needs 4K hero shots ===
+  // The largest srcset entry the browser can pick will be w=1920, saving 30-80% per image
+  html = html.replace(/[^,\s]+&(?:amp;)?w=(?:2048|3840)&(?:amp;)?q=\d+\s+\d+w,?\s*/gi, '');
+
+  // === Lazy-load all <img> below-the-fold (carousel, cards, reviews, team) ===
+  // Adds loading="lazy" + decoding="async" + fetchpriority="low" to every img that
+  // doesn't already have a loading attr. Skips the first 2 imgs (logo + above-fold).
+  let _imgIdx = 0;
+  html = html.replace(/<img\b[^>]*>/gi, function(tag){
+    _imgIdx++;
+    if (_imgIdx <= 2) return tag;                      // keep logo + first content image eager
+    if (/\sloading=/i.test(tag)) return tag;           // already has loading attr
+    if (/data:image\/gif;base64,R0lGODlh/i.test(tag)) return tag;  // already neutered (hero)
+    return tag.replace(/<img\b/i, '<img loading="lazy" decoding="async" fetchpriority="low"');
+  });
+
   // Inject hash-killer + dark cover overlay before any other scripts
   // The dark cover hides the flash of #challenge-at-top while our hero injects
   const HASH_KILLER = `<script>(function(){
