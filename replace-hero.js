@@ -687,46 +687,59 @@ export default async (request, context) => {
   });
 
   // === Aggressive image optimisation =================================================
-  // Three independent passes that together cut downloaded image weight by ~95%.
+  // Swap every reference to /images/<name>.png with our pre-compressed WebP on jsDelivr.
+  // 35 MB of source PNGs → 776 KB of WebP (97.8% smaller). Done at the edge so we
+  // never have to touch the upstream Next.js build.
+  const CDN_IMG = 'https://cdn.jsdelivr.net/gh/UPTRADING/diligram-assets@main/img/';
+  const COMPRESSED = new Set([
+    'ch_card1','ch_card2','ch_card3','ch_card4',
+    'ch_slide1','ch_slide2','ch_slide3','ch_slide4','ch_slide5',
+    'favicon','logo','nc1','nc2','nc3','product-suite','reviews_bg',
+    't1','t2','t3','t4','t5','t6'
+  ]);
 
-  // 1) Drop ALL oversized srcset variants (w >= 1280). Capped at w=1080.
-  //    Without this the browser on a Retina laptop happily picks w=3840.
-  html = html.replace(
-    /[^,\s]+&(?:amp;)?w=(?:1280|1920|2048|3840)&(?:amp;)?q=\d+\s+\d+w,?\s*/gi, ''
-  );
-
-  // 2) Force quality on every Next.js image to q=50 (was q=75). Visually identical for
-  //    photographic content, ~35% smaller. Applies to both srcset and src URLs.
-  html = html.replace(/&(amp;)?q=75\b/gi, function(_,a){ return '&' + (a||'') + 'q=50'; });
-
-  // 3) Rewrite the bare src= attribute on Next images that still requests w>=1280
-  //    down to w=1080. The browser falls back to src= when no srcset entry matches.
-  html = html.replace(
-    /(\/_next\/image\?[^"'\s]*?&(?:amp;)?w=)(?:1280|1920|2048|3840)/gi, '$11080'
-  );
-
-  // 4) Nuke the 13.85 MB reviews_bg.png monster — replace its <img> with a 1×1 shim.
-  //    A CSS gradient (already in HERO_CSS via #dlg-reviews-bg fallback) covers the section.
-  html = html.replace(/<img\b[^>]*reviews_bg[^>]*>/gi, function(tag){
+  // 1) Rewrite all <img src="/_next/image?url=%2Fimages%2F<name>.png&w=...&q=..."> →
+  //    <img src="https://cdn.jsdelivr.net/.../<name>.webp"> and strip srcset entirely.
+  html = html.replace(/<img\b[^>]*>/gi, function(tag){
+    // Find the underlying image name in either src or srcSet
+    const m = tag.match(/(?:src|srcSet|srcset)=["'][^"']*?(?:%2F|\/)images(?:%2F|\/)([a-z0-9_-]+)\.(?:png|jpg|jpeg|webp)/i);
+    if (!m) return tag;
+    const name = m[1].toLowerCase();
+    if (!COMPRESSED.has(name)) return tag;
+    const newUrl = CDN_IMG + name + '.webp';
     return tag
       .replace(/\ssrcSet=("|')[^"']*\1/gi, '')
       .replace(/\ssrcset=("|')[^"']*\1/gi, '')
-      .replace(/\ssrc=("|')[^"']*\1/gi,
-        ' src="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="')
-      .replace(/\sloading=("|')[^"']*\1/gi, ' loading="lazy"')
-      .replace(/\sfetchPriority=("|')[^"']*\1/gi, ' fetchpriority="low"');
+      .replace(/\ssrc=("|')[^"']*\1/i, ' src="' + newUrl + '"');
   });
-  // Also drop any preload <link> hint pointing at reviews_bg
-  html = html.replace(/<link\b[^>]*reviews_bg[^>]*>/gi, '');
 
-  // 5) Inject a soft gradient behind the testimonials section so the missing PNG
-  //    isn't visible. Targets the parent of the now-empty <img> via :has().
-  html = html.replace(/<\/head>/i,
-    '<style id="dlg-perf-bg">section:has(> div > img[src^="data:image/gif"]),' +
-    'div.relative:has(> img[src^="data:image/gif"][alt*="background" i]){' +
-    'background:linear-gradient(135deg,#0a1628 0%,#0f2847 50%,#0a1628 100%) !important;}' +
-    '</style></head>'
-  );
+  // 2) Rewrite any <link rel="preload" as="image" imageSrcSet="..."> for these images
+  html = html.replace(/<link\b[^>]*?(?:imageSrcSet|imagesrcset|href)=["'][^"']*?(?:%2F|\/)images(?:%2F|\/)([a-z0-9_-]+)\.(?:png|jpg|jpeg|webp)[^>]*>/gi,
+    function(tag, name){
+      const lc = name.toLowerCase();
+      if (!COMPRESSED.has(lc)) return tag;
+      // Replace with a clean preload pointing at our WebP — only useful for above-fold
+      // images, but harmless for others (browser dedupes).
+      return '<link rel="preload" as="image" href="' + CDN_IMG + lc + '.webp" fetchpriority="low">';
+    });
+
+  // 3) Catch-all for inline /_next/image?url=%2Fimages%2F<name>.png references that
+  //    didn't match an <img> tag (e.g. embedded in JSON for the Next.js data island).
+  html = html.replace(/\/_next\/image\?url=%2Fimages%2F([a-z0-9_-]+)\.(?:png|jpg|jpeg|webp)[^"'\\]*?(?:\\?")/gi,
+    function(match, name){
+      const lc = name.toLowerCase();
+      if (!COMPRESSED.has(lc)) return match;
+      const tail = match.endsWith('\\"') ? '\\"' : '"';
+      return CDN_IMG + lc + '.webp' + tail;
+    });
+
+  // 4) Catch direct /images/<name>.png references (not via Next image optimizer)
+  html = html.replace(/(?:["'\\(])(?:https?:\/\/[^"'\\)]+)?\/images\/([a-z0-9_-]+)\.(?:png|jpg|jpeg|webp)/gi,
+    function(match, name){
+      const lc = name.toLowerCase();
+      if (!COMPRESSED.has(lc)) return match;
+      return match[0] + CDN_IMG + lc + '.webp';
+    });
 
   // === Lazy-load all <img> below-the-fold ===========================================
   // Adds loading="lazy" + decoding="async" + fetchpriority="low" to every img that
