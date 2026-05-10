@@ -670,6 +670,21 @@ export default async (request, context) => {
   html = html.replace(/\\"id\\":\\"challenge\\"/g, '\\"id\\":\\"challenge-disabled\\"');
   html = html.replace(/href=["']\/?#challenge["']/g, 'href="#"');
   html = html.replace(/\\"href\\":\\"\/?#challenge\\"/g, '\\"href\\":\\"#\\"');
+
+  // === Kill the 2.4 MB hero_bg.png that the original page preloads/renders ===
+  // Our overlay #dlg-hero hides it visually, but the browser still downloads it.
+  // 1) Remove the <link rel="preload" as="image" imageSrcSet="...hero_bg..."> hint
+  html = html.replace(/<link\b[^>]*hero_bg[^>]*>/gi, '');
+  // 2) Neutralise any <img> referencing hero_bg by stripping its src/srcset attrs
+  //    (the <img> tag itself stays so React's hydration tree isn't disturbed)
+  html = html.replace(/<img\b[^>]*hero_bg[^>]*>/gi, function(tag){
+    return tag
+      .replace(/\ssrcSet=("|')[^"']*\1/gi, '')
+      .replace(/\ssrcset=("|')[^"']*\1/gi, '')
+      .replace(/\ssrc=("|')[^"']*hero_bg[^"']*\1/gi, ' src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="')
+      .replace(/\sloading=("|')[^"']*\1/gi, ' loading="lazy"')
+      .replace(/\sfetchPriority=("|')[^"']*\1/gi, ' fetchpriority="low"');
+  });
   // Inject hash-killer + dark cover overlay before any other scripts
   // The dark cover hides the flash of #challenge-at-top while our hero injects
   const HASH_KILLER = `<script>(function(){
