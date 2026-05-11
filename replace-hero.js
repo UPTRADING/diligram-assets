@@ -847,9 +847,9 @@ export default async (request, context) => {
   const headers = new Headers(response.headers);
   headers.delete("content-length");
   // Cache the rewritten HTML at Netlify's edge so 99% of visitors skip this function.
-  // s-maxage=300 = 5min CDN cache; SWR=86400 = serve stale up to 1 day while revalidating.
+  // s-maxage=3600 = 1hr CDN cache; SWR=2592000 = serve stale up to 30 days while revalidating.
   // "durable" stores it in Netlify's persistent cache layer (long-tail hits stay fast).
   headers.set("Cache-Control", "public, max-age=0, must-revalidate");
-  headers.set("Netlify-CDN-Cache-Control", "public, durable, s-maxage=300, stale-while-revalidate=86400");
+  headers.set("Netlify-CDN-Cache-Control", "public, durable, s-maxage=3600, stale-while-revalidate=2592000");
   return new Response(html, { status: response.status, headers });
 };
