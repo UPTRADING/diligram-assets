@@ -836,7 +836,10 @@ export default async (request, context) => {
 }
 #dlg-cover.dlg-cover-gone { opacity: 0; pointer-events: none; }
 </style>`;
-  html = html.replace("<head>", "<head>" + BODY_HIDER + HASH_KILLER);
+  // Preload hero bg image as early as possible — it has ~1s TTFB on jsdelivr
+  // so the browser needs a head-start before dlg-inject creates the CSS background.
+  const HERO_PRELOAD = `<link rel="preload" as="image" href="${BG}" fetchpriority="high">`;
+  html = html.replace("<head>", "<head>" + HERO_PRELOAD + BODY_HIDER + HASH_KILLER);
   // Inject splash spinner as first child of body (sits above everything via #dlg-splash CSS)
   html = html.replace(/<body([^>]*)>/, '<body$1><div id="dlg-splash"></div><div id="dlg-cover"></div>');
   html = html.replace("</head>", HERO_CSS + "</head>");
