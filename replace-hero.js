@@ -841,6 +841,13 @@ export default async (request, context) => {
   html = html.replace(/<body([^>]*)>/, '<body$1><div id="dlg-splash"></div><div id="dlg-cover"></div>');
   html = html.replace("</head>", HERO_CSS + "</head>");
   html = html.replace("</body>", INJECT_SCRIPT + "</body>");
+  // Defer Weglot — was render-blocking (216KB sync load)
+  html = html.replace(
+    /<script\b([^>]*?)\bsrc=("|')https:\/\/cdn\.weglot\.com\/weglot\.min\.js\2([^>]*)><\/script>/gi,
+    (m, pre, q, post) =>
+      /\bdefer\b/i.test(pre + post) ? m
+        : `<script${pre} src=${q}https://cdn.weglot.com/weglot.min.js${q}${post} defer></script>`
+  );
   const headers = new Headers(response.headers);
   headers.delete("content-length");
   // Cache the rewritten HTML at Netlify's edge so 99% of visitors skip this function.
