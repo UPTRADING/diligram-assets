@@ -342,18 +342,23 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
 #dlg-mob-lang img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ===== French language overrides — FR copy is ~30-50% longer than EN, so scale down ===== */
+/* Note: React/Next hydration on fr.* may reset html[lang="en"], so also use .dlg-fr class set by JS */
 html[lang^="fr"] #dlg-content h1,
+html.dlg-fr #dlg-content h1,
 :lang(fr) #dlg-content h1 {
-  font-size: clamp(1.8rem, 3.8vw, 3.6rem);
+  font-size: clamp(1.8rem, 3.4vw, 3.2rem);
   letter-spacing: -1px;
   line-height: 1.04;
 }
 html[lang^="fr"] .dlg-sub,
+html.dlg-fr .dlg-sub,
 :lang(fr) .dlg-sub {
-  font-size: clamp(0.95rem, 1.25vw, 1.2rem);
-  line-height: 1.55;
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+  line-height: 1.5;
+  margin-bottom: 24px;
 }
 html[lang^="fr"] .dlg-kicker,
+html.dlg-fr .dlg-kicker,
 :lang(fr) .dlg-kicker {
   font-size: 11px;
   letter-spacing: .8px;
@@ -363,14 +368,32 @@ html[lang^="fr"] .dlg-kicker,
   line-height: 1.35;
   padding: 6px 12px;
 }
+/* Desktop FR proof-bar: shrink stats so longer French labels don't blow up */
+html[lang^="fr"] #dlg-content,
+html.dlg-fr #dlg-content,
+:lang(fr) #dlg-content { padding-top: 90px; }
+html[lang^="fr"] .dlg-stat-big,
+html.dlg-fr .dlg-stat-big,
+:lang(fr) .dlg-stat-big { font-size: 22px; }
+html[lang^="fr"] .dlg-stat-label,
+html.dlg-fr .dlg-stat-label,
+:lang(fr) .dlg-stat-label { font-size: 9px; letter-spacing: .8px; line-height: 1.3; }
+html[lang^="fr"] #dlg-proof-inner,
+html.dlg-fr #dlg-proof-inner,
+:lang(fr) #dlg-proof-inner { gap: 20px; }
+html[lang^="fr"] #dlg-proof,
+html.dlg-fr #dlg-proof,
+:lang(fr) #dlg-proof { padding: 22px 56px 26px; }
 @media (max-width: 767px) {
   html[lang^="fr"] #dlg-content h1,
+  html.dlg-fr #dlg-content h1,
   :lang(fr) #dlg-content h1 {
     font-size: 1.95rem;
     letter-spacing: -0.6px;
     line-height: 1.08;
   }
   html[lang^="fr"] .dlg-kicker,
+  html.dlg-fr .dlg-kicker,
   :lang(fr) .dlg-kicker {
     font-size: 9px;
     letter-spacing: 0.6px;
@@ -378,10 +401,13 @@ html[lang^="fr"] .dlg-kicker,
     padding: 4px 8px;
   }
   html[lang^="fr"] .dlg-sub,
+  html.dlg-fr .dlg-sub,
   :lang(fr) .dlg-sub { font-size: 0.85rem; line-height: 1.5; }
   html[lang^="fr"] .dlg-stat-big,
+  html.dlg-fr .dlg-stat-big,
   :lang(fr) .dlg-stat-big { font-size: 16px; }
   html[lang^="fr"] .dlg-stat-label,
+  html.dlg-fr .dlg-stat-label,
   :lang(fr) .dlg-stat-label { font-size: 9px; letter-spacing: .6px; }
 }
 
@@ -445,6 +471,12 @@ var H =
 function inject(){
   if(document.getElementById('dlg-hero')) return;
   document.title = 'Diligram \u2014 Total Governance Control';
+  // FR subdomain: re-enforce lang attr (React hydration resets it) and add fallback class
+  // so our :lang(fr) and .dlg-fr CSS rules apply reliably.
+  if(location.hostname.indexOf('fr.') === 0){
+    try { document.documentElement.lang = 'fr'; } catch(e){}
+    document.documentElement.classList.add('dlg-fr');
+  }
   var old = document.querySelector('section[class*="h-[80vh]"]');
   if(!old) return;
   old.style.cssText = 'display:none!important';
