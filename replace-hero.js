@@ -414,6 +414,13 @@ html.dlg-fr #dlg-proof,
 </style>`;
 
 const INJECT_SCRIPT = `<script id="dlg-inject">(function(){
+// Strip Next.js's low-priority preloads BEFORE the load event so the browser
+// doesn't fire "preloaded but not used" warnings (~3s after load). Done client-side
+// to avoid breaking React hydration (which would happen if we stripped them in HTML).
+try {
+  var stale = document.querySelectorAll('link[rel="preload"][fetchpriority="low"], link[rel="preload"][fetchPriority="low"]');
+  for (var i = 0; i < stale.length; i++) { stale[i].parentNode && stale[i].parentNode.removeChild(stale[i]); }
+} catch(e){}
 var LOGO = '/_next/image?url=%2Fimages%2Flogo.png&w=384&q=75';
 var BG   = '${BG}';
 var H =
@@ -868,10 +875,10 @@ export default async (request, context) => {
 }
 #dlg-cover.dlg-cover-gone { opacity: 0; pointer-events: none; }
 </style>`;
-  // Strip the low-priority image preloads emitted by Next.js — they target below-fold
-  // images that our hero replaces or that won't render before the load event, so they
-  // trigger a flood of "preloaded but not used within a few seconds" console warnings.
-  html = html.replace(/<link\b[^>]*rel="preload"[^>]*fetchpriority="low"[^>]*>/gi, '');
+  // Note: Stripping <link rel="preload"> tags server-side caused React hydration
+  // mismatch (#418) because Next.js's RSC tree expects them. Instead we strip them
+  // CLIENT-SIDE in dlg-inject (which runs before the load event), preserving
+  // hydration while still suppressing the "preloaded but not used" console warnings.
   // Preload hero bg image as early as possible — it has ~1s TTFB on jsdelivr
   // so the browser needs a head-start before dlg-inject creates the CSS background.
   const HERO_PRELOAD = `<link rel="preload" as="image" href="${BG}" fetchpriority="high">`;
