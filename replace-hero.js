@@ -675,6 +675,22 @@ export default async (request, context) => {
     if(document.body){ mo.observe(document.body, { childList: true }); }
     // Hard fallback: unhide after 4s no matter what
     setTimeout(function(){ if(!killed) window.__dlgUnhide(); }, 4000);
+    // Create splash and cover as SIBLINGS of <body> (children of <html>), NOT inside <body>.
+    // React's hydrateRoot operates on document.body; elements outside body are not reconciled,
+    // so this prevents the React #418 hydration mismatch that occurred when they were first in body.
+    var splash = document.createElement('div');
+    splash.id = 'dlg-splash';
+    var bgImg = document.createElement('img');
+    bgImg.src = '${BG}';
+    bgImg.alt = '';
+    bgImg.setAttribute('aria-hidden','true');
+    bgImg.setAttribute('fetchpriority','high');
+    bgImg.style.cssText = 'position:absolute;width:1px;height:1px;opacity:0;pointer-events:none';
+    splash.appendChild(bgImg);
+    document.documentElement.appendChild(splash);
+    var cover = document.createElement('div');
+    cover.id = 'dlg-cover';
+    document.documentElement.appendChild(cover);
   })();</script>`;
 
   // ===== Social preview meta (OG + Twitter) — overwrite all stale values =====
@@ -883,10 +899,9 @@ export default async (request, context) => {
   // so the browser needs a head-start before dlg-inject creates the CSS background.
   const HERO_PRELOAD = `<link rel="preload" as="image" href="${BG}" fetchpriority="high">`;
   html = html.replace("<head>", "<head>" + HERO_PRELOAD + BODY_HIDER + HASH_KILLER);
-  // Inject splash spinner as first child of body. Hidden <img> inside splash makes the
-  // hero preload register as "used" immediately on parse (avoids the unused-preload warning
-  // when React is slow and dlg-inject runs after the load event).
-  html = html.replace(/<body([^>]*)>/, '<body$1><div id="dlg-splash"><img src="' + BG + '" alt="" aria-hidden="true" fetchpriority="high" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></div><div id="dlg-cover"></div>');
+  // Note: dlg-splash and dlg-cover are created by BODY_HIDER (head script) and appended to
+  // document.documentElement as siblings of <body> — NOT injected into body — so React's
+  // hydrateRoot(document.body) does not see them and can hydrate without a #418 mismatch.
   html = html.replace("</head>", HERO_CSS + "</head>");
   html = html.replace("</body>", INJECT_SCRIPT + "</body>");
   const headers = new Headers(response.headers);
