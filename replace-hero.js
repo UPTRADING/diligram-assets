@@ -414,13 +414,40 @@ html.dlg-fr #dlg-proof,
 </style>`;
 
 const INJECT_SCRIPT = `<script id="dlg-inject">(function(){
-// Strip Next.js's low-priority preloads BEFORE the load event so the browser
-// doesn't fire "preloaded but not used" warnings (~3s after load). Done client-side
-// to avoid breaking React hydration (which would happen if we stripped them in HTML).
-try {
-  var stale = document.querySelectorAll('link[rel="preload"][fetchpriority="low"], link[rel="preload"][fetchPriority="low"]');
-  for (var i = 0; i < stale.length; i++) { stale[i].parentNode && stale[i].parentNode.removeChild(stale[i]); }
-} catch(e){}
+// Strip preloads that will fire "preloaded but not used" warnings:
+// 1) Our CDN images with fetchpriority="low" (below-fold, won't fire before the 3s timer)
+// 2) Next.js dynamically-injected preloads for hero_bg and reviews_bg (we replace/hide them)
+// Also attach a MutationObserver to catch preloads injected dynamically by Next.js AFTER this script.
+function stripStalePreloads(){
+  try {
+    var all = document.querySelectorAll('link[rel="preload"][as="image"], link[rel="preload"][as="script"]');
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i]; var href = el.href || '';
+      var isLow = (el.getAttribute('fetchpriority') || el.getAttribute('fetchPriority') || '').toLowerCase() === 'low';
+      var isStaleNext = /hero_bg|reviews_bg/.test(href);
+      if ((isLow || isStaleNext) && el.parentNode) el.parentNode.removeChild(el);
+    }
+  } catch(e){}
+}
+stripStalePreloads();
+// Catch any preloads Next.js injects dynamically after hydration
+if (typeof MutationObserver !== 'undefined') {
+  var _pmo = new MutationObserver(function(mutations) {
+    for (var i = 0; i < mutations.length; i++) {
+      var nodes = mutations[i].addedNodes;
+      for (var j = 0; j < nodes.length; j++) {
+        var n = nodes[j];
+        if (n.nodeType === 1 && n.tagName === 'LINK' && n.rel === 'preload') {
+          var h = n.href || ''; var fp = (n.getAttribute('fetchpriority') || n.getAttribute('fetchPriority') || '').toLowerCase();
+          if (fp === 'low' || /hero_bg|reviews_bg/.test(h)) { try { n.parentNode && n.parentNode.removeChild(n); } catch(e){} }
+        }
+      }
+    }
+  });
+  if (document.head) _pmo.observe(document.head, { childList: true });
+  // Stop after 10s
+  setTimeout(function(){ _pmo.disconnect(); }, 10000);
+}
 var LOGO = '/_next/image?url=%2Fimages%2Flogo.png&w=384&q=75';
 var BG   = '${BG}';
 var H =
@@ -622,7 +649,16 @@ function tryInjectLoop(){
   }
 }
 if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', tryInjectLoop);
+  // Delay until AFTER React's initial hydration pass.
+  // React 18 schedules hydration via MessageChannel (fires before setTimeout 0),
+  // so using DOMContentLoaded + double-rAF ensures we run after React's first commit.
+  document.addEventListener('DOMContentLoaded', function(){
+    if(typeof requestAnimationFrame === 'function'){
+      requestAnimationFrame(function(){ requestAnimationFrame(tryInjectLoop); });
+    } else {
+      setTimeout(tryInjectLoop, 50);
+    }
+  });
 } else {
   tryInjectLoop();
 }
