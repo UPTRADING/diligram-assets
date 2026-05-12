@@ -868,12 +868,18 @@ export default async (request, context) => {
 }
 #dlg-cover.dlg-cover-gone { opacity: 0; pointer-events: none; }
 </style>`;
+  // Strip the low-priority image preloads emitted by Next.js — they target below-fold
+  // images that our hero replaces or that won't render before the load event, so they
+  // trigger a flood of "preloaded but not used within a few seconds" console warnings.
+  html = html.replace(/<link\b[^>]*rel="preload"[^>]*fetchpriority="low"[^>]*>/gi, '');
   // Preload hero bg image as early as possible — it has ~1s TTFB on jsdelivr
   // so the browser needs a head-start before dlg-inject creates the CSS background.
   const HERO_PRELOAD = `<link rel="preload" as="image" href="${BG}" fetchpriority="high">`;
   html = html.replace("<head>", "<head>" + HERO_PRELOAD + BODY_HIDER + HASH_KILLER);
-  // Inject splash spinner as first child of body (sits above everything via #dlg-splash CSS)
-  html = html.replace(/<body([^>]*)>/, '<body$1><div id="dlg-splash"></div><div id="dlg-cover"></div>');
+  // Inject splash spinner as first child of body. Hidden <img> inside splash makes the
+  // hero preload register as "used" immediately on parse (avoids the unused-preload warning
+  // when React is slow and dlg-inject runs after the load event).
+  html = html.replace(/<body([^>]*)>/, '<body$1><div id="dlg-splash"><img src="' + BG + '" alt="" aria-hidden="true" fetchpriority="high" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none"></div><div id="dlg-cover"></div>');
   html = html.replace("</head>", HERO_CSS + "</head>");
   html = html.replace("</body>", INJECT_SCRIPT + "</body>");
   const headers = new Headers(response.headers);
