@@ -277,7 +277,7 @@ a[class*="bg-primary"][class*="gap-3"] {
   color: #0a1628 !important;
   box-shadow: 0 8px 24px rgba(245,183,0,.30) !important;
   transition: background-color .2s, transform .2s, box-shadow .2s !important;
-  padding-right: 4px !important;
+  padding-right: 10px !important;
 }
 a[class*="bg-primary"][class*="gap-3"]:hover {
   background-color: #e0a800 !important;
@@ -661,7 +661,7 @@ function injectProductStrip(){
   if(!target) return;
   var strip = document.createElement('section');
   strip.id = 'dlg-product-strip';
-  strip.innerHTML = '<div style="max-width:1180px;margin:0 auto;padding:0 56px"><p>Our core product, MyStaff app, is live in the NHS and trusted by Tier-1 organisations.</p><a href="https://www.mystaffapp.ai" class="dlg-strip-btn" target="_blank" rel="noopener noreferrer">Visit MyStaff app <span style="display:inline-flex;align-items:center;justify-content:center;background:#0a1628;color:#f5b700;border-radius:50%;width:26px;height:26px;flex-shrink:0"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"/></svg></span></a></div>';
+  strip.innerHTML = '<div style="max-width:1180px;margin:0 auto;padding:0 56px"><p>Our core product, MyStaff app, is live in the NHS and trusted by Tier-1 organisations.</p><a href="https://www.mystaffapp.ai" class="dlg-strip-btn" target="_blank" rel="noopener noreferrer">Visit MyStaff app <span style="display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#0a1628;border-radius:50%;width:26px;height:26px;flex-shrink:0"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"/></svg></span></a></div>';
   target.parentNode.insertBefore(strip, target);
 }
 
