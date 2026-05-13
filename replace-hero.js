@@ -259,7 +259,7 @@ html:not(:has(#dlg-hero))::after {
   gap: 8px;
   background: #f5b700;
   color: #0a1628 !important;
-  padding: 12px 28px;
+  padding: 12px 12px 12px 20px;
   border-radius: 6px;
   font-weight: 700;
   font-size: 14px;
