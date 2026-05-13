@@ -381,10 +381,9 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
   .dlg-cta { padding: 12px 24px !important; min-height: 46px; font-size: 14px !important; align-self: flex-start; }
-  /* Equal-size the two contact-section CTAs */
+  /* justify-content centering for equal-width contact CTAs (width set by JS) */
   a[href*="mystaffapp.ai/contact"][class*="bg-primary"],
   a[href*="linkedin.com"][class*="bg-primary"][class*="gap-3"] {
-    width: 100% !important;
     justify-content: center !important;
   }
   .dlg-stat-big { font-size: 19px; }
@@ -654,6 +653,26 @@ function inject(){
   injectProductStrip();
   // AP-style capitalisation on Next.js generated buttons
   fixButtonCaps();
+  equalizeContactBtns();
+}
+
+function equalizeContactBtns(){
+  function run(){
+    var a = document.querySelector('a[href*="mystaffapp.ai/contact"][class*="bg-primary"]');
+    var b = document.querySelector('a[href*="linkedin.com"][class*="bg-primary"][class*="gap-3"]');
+    if(!a || !b) return;
+    // Only on mobile
+    if(window.innerWidth > 767) return;
+    // Reset so we measure natural widths
+    a.style.minWidth = ''; b.style.minWidth = '';
+    var wa = a.getBoundingClientRect().width;
+    var wb = b.getBoundingClientRect().width;
+    var w = Math.max(wa, wb) + 'px';
+    a.style.minWidth = w; b.style.minWidth = w;
+  }
+  // run after layout settles
+  requestAnimationFrame(function(){ requestAnimationFrame(run); });
+  window.addEventListener('resize', run);
 }
 
 function fixButtonCaps(){
