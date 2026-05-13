@@ -248,10 +248,10 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   text-align: center;
   align-items: start;
 }
-.dlg-stat-big { display: block; font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -.5px; }
-.dlg-stat-label { display: block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8a96a8; margin-top: 4px; }
-/* Text tiles: same size as numeric tiles, just tighter line-height for wrapping */
-.dlg-tile-text .dlg-stat-big { font-size: 28px; font-weight: 800; line-height: 1.15; letter-spacing: -.3px; }
+.dlg-stat-big { display: block; font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -.5px; line-height: 1.1; }
+.dlg-stat-label { display: block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8a96a8; margin-top: 4px; line-height: 1.4; }
+.dlg-tile-text { align-self: start; }
+.dlg-tile-text .dlg-stat-big { letter-spacing: -.3px; }
 .dlg-tile-text .dlg-stat-label { margin-top: 6px; }
 
 /* Tablet */
