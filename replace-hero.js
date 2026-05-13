@@ -249,8 +249,8 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
 }
 .dlg-stat-big { display: block; font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -.5px; }
 .dlg-stat-label { display: block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8a96a8; margin-top: 4px; }
-/* Text tiles (longer titles): slightly smaller than numeric tiles but visually balanced */
-.dlg-tile-text .dlg-stat-big { font-size: 20px; font-weight: 700; line-height: 1.2; letter-spacing: 0; }
+/* Text tiles: same size as numeric tiles, just tighter line-height for wrapping */
+.dlg-tile-text .dlg-stat-big { font-size: 28px; font-weight: 800; line-height: 1.15; letter-spacing: -.3px; }
 .dlg-tile-text .dlg-stat-label { margin-top: 6px; }
 
 /* Tablet */
@@ -314,10 +314,9 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
   .dlg-cta { padding: 12px 24px !important; min-height: 46px; font-size: 14px !important; align-self: flex-start; }
   .dlg-stat-big { font-size: 19px; }
-  .dlg-tile-text .dlg-stat-big { font-size: 15px; }
   .dlg-stat-label { font-size: 10px; letter-spacing: 1px; }
 }
-@media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } .dlg-tile-text .dlg-stat-big { font-size: 13px; } }
+@media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
 
 /* Weglot translate widget — DESKTOP UNTOUCHED elsewhere; on the home page we hide it
    entirely and provide our own inline switcher inside the nav (desktop) and burger (mobile). */
