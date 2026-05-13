@@ -553,6 +553,7 @@ var H =
 +     '<li><a href="/#products">Products</a></li>'
 +     '<li><a href="/#team">Team</a></li>'
 +     '<li><a href="/#contact">Contact</a></li>'
++     '<li><a href="https://www.mystaffapp.ai" target="_blank" rel="noopener noreferrer" style="color:#f5b700!important;font-weight:600!important">Core Product: MyStaff app &#x2192;</a></li>'
 +   '</ul>'
 +   '<div id="dlg-mob-lang" aria-label="Language">'
 +     '<a href="https://www.diligram.com/" class="dlg-lang-en" aria-label="English" hreflang="en"><img src="https://cdn.weglot.com/flags/rectangle_mat/gb.svg" alt="English"></a>'
