@@ -277,6 +277,7 @@ a[class*="bg-primary"][class*="gap-3"] {
   color: #0a1628 !important;
   box-shadow: 0 8px 24px rgba(245,183,0,.30) !important;
   transition: background-color .2s, transform .2s, box-shadow .2s !important;
+  padding-right: 4px !important;
 }
 a[class*="bg-primary"][class*="gap-3"]:hover {
   background-color: #e0a800 !important;
