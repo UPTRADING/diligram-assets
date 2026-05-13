@@ -191,7 +191,7 @@ html:not(:has(#dlg-hero))::after {
   gap: 10px;
   background: #f5b700;
   color: #0a1628 !important;
-  padding: 14px 10px 14px 22px !important;
+  padding: 14px 12px !important;
   min-height: 52px;
   box-sizing: border-box;
   border-radius: 6px !important;
