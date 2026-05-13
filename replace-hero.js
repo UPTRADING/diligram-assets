@@ -314,9 +314,10 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
   .dlg-cta { padding: 12px 24px !important; min-height: 46px; font-size: 14px !important; align-self: flex-start; }
   .dlg-stat-big { font-size: 19px; }
+  .dlg-tile-text .dlg-stat-big { font-size: 19px; }
   .dlg-stat-label { font-size: 10px; letter-spacing: 1px; }
 }
-@media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } }
+@media (max-width: 380px) { .dlg-stat-big { font-size: 17px; } .dlg-tile-text .dlg-stat-big { font-size: 17px; } }
 
 /* Weglot translate widget — DESKTOP UNTOUCHED elsewhere; on the home page we hide it
    entirely and provide our own inline switcher inside the nav (desktop) and burger (mobile). */
