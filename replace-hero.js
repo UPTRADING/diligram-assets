@@ -500,7 +500,7 @@ var H =
 + '<div id="dlg-proof" aria-label="Key metrics">'
 +   '<div id="dlg-proof-inner">'
 +     '<div><span class="dlg-stat-big">100K+</span><span class="dlg-stat-label">Staff on live deployments</span></div>'
-+     '<div><span class="dlg-stat-big">76\u219298%</span><span class="dlg-stat-label">Compliance in 6 months</span></div>'
++     '<div><span class="dlg-stat-big">76\u219298%</span><span class="dlg-stat-label">Compliance improvement in 6 months</span></div>'
 +     '<div class="dlg-tile-text"><span class="dlg-stat-big">Built for Tier-1</span><span class="dlg-stat-label">The NHS \u2014 one of the world\u2019s most demanding operating environments</span></div>'
 +     '<div class="dlg-tile-text"><span class="dlg-stat-big">Vertical excellence</span><span class="dlg-stat-label">Now trusted by leading organisations and governments worldwide</span></div>'
 +   '</div>'
