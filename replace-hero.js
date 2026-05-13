@@ -249,6 +249,9 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
 }
 .dlg-stat-big { display: block; font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -.5px; }
 .dlg-stat-label { display: block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: #8a96a8; margin-top: 4px; }
+/* Text tiles (longer titles): scale .dlg-stat-big down so it fits the same column */
+.dlg-tile-text .dlg-stat-big { font-size: 15px; font-weight: 700; line-height: 1.2; letter-spacing: 0; }
+.dlg-tile-text .dlg-stat-label { margin-top: 6px; }
 
 /* Tablet */
 @media (max-width: 1024px) {
@@ -496,8 +499,8 @@ var H =
 +   '<div id="dlg-proof-inner">'
 +     '<div><span class="dlg-stat-big">100K+</span><span class="dlg-stat-label">Staff on live deployments</span></div>'
 +     '<div><span class="dlg-stat-big">76\u219298%</span><span class="dlg-stat-label">Compliance in 6 months</span></div>'
-+     '<div><span class="dlg-stat-big">\u00a31.8M+</span><span class="dlg-stat-label">Documented savings</span></div>'
-+     '<div><span class="dlg-stat-big">5</span><span class="dlg-stat-label">Regulated industries served</span></div>'
++     '<div class="dlg-tile-text"><span class="dlg-stat-big">First client: The NHS</span><span class="dlg-stat-label">One of the world\u2019s most demanding operating environments</span></div>'
++     '<div class="dlg-tile-text"><span class="dlg-stat-big">Vertical excellence</span><span class="dlg-stat-label">Now trusted by Tier-1 organisations and governments worldwide</span></div>'
 +   '</div>'
 + '</div>'
 + '</section>';
