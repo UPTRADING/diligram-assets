@@ -381,6 +381,12 @@ a[aria-label^="LinkedIn profile of"][class*="bg-primary"] svg { color: #0a1628 !
   }
   .dlg-sub { font-size: 0.9rem; line-height: 1.5; margin: 0 0 20px; }
   .dlg-cta { padding: 12px 24px !important; min-height: 46px; font-size: 14px !important; align-self: flex-start; }
+  /* Equal-size the two contact-section CTAs */
+  a[href*="mystaffapp.ai/contact"][class*="bg-primary"],
+  a[href*="linkedin.com"][class*="bg-primary"][class*="gap-3"] {
+    width: 100% !important;
+    justify-content: center !important;
+  }
   .dlg-stat-big { font-size: 19px; }
   .dlg-tile-text .dlg-stat-big { font-size: 19px; }
   .dlg-stat-label { font-size: 10px; letter-spacing: 1px; }
@@ -646,6 +652,17 @@ function inject(){
   bindLangClick('.dlg-lang-fr:not(.dlg-lang-current)', 'fr', 'weglot-language-fr');
   // Inject product strip before the copyright footer
   injectProductStrip();
+  // AP-style capitalisation on Next.js generated buttons
+  fixButtonCaps();
+}
+
+function fixButtonCaps(){
+  document.querySelectorAll('a[href*="mystaffapp.ai/contact"][class*="bg-primary"]').forEach(function(a){
+    var t=a.firstChild; if(t&&t.nodeType===3) t.textContent=t.textContent.replace('Get in touch','Get in Touch');
+  });
+  document.querySelectorAll('a[class*="bg-primary"][class*="gap-3"]').forEach(function(a){
+    var t=a.firstChild; if(t&&t.nodeType===3) t.textContent=t.textContent.replace('Check more','Check More');
+  });
 }
 
 function injectProductStrip(){
@@ -661,7 +678,7 @@ function injectProductStrip(){
   if(!target) return;
   var strip = document.createElement('section');
   strip.id = 'dlg-product-strip';
-  strip.innerHTML = '<div style="max-width:1180px;margin:0 auto;padding:0 56px"><p>Our core product, MyStaff app, is live in the NHS and trusted by Tier-1 organisations.</p><a href="https://www.mystaffapp.ai" class="dlg-strip-btn" target="_blank" rel="noopener noreferrer">Visit MyStaff app <span style="display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#0a1628;border-radius:50%;width:26px;height:26px;flex-shrink:0"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"/></svg></span></a></div>';
+  strip.innerHTML = '<div style="max-width:1180px;margin:0 auto;padding:0 56px"><p>Our core product, MyStaff app, is live in the NHS and trusted by Tier-1 organisations.</p><a href="https://www.mystaffapp.ai" class="dlg-strip-btn" target="_blank" rel="noopener noreferrer">Visit MyStaff App <span style="display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#0a1628;border-radius:50%;width:26px;height:26px;flex-shrink:0"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"/></svg></span></a></div>';
   target.parentNode.insertBefore(strip, target);
 }
 
