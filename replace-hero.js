@@ -203,6 +203,72 @@ html:not(:has(#dlg-hero))::after {
   transition: transform .2s, box-shadow .2s;
 }
 .dlg-cta:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(245,183,0,.45); }
+/* Secondary outbound CTA */
+.dlg-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1.5px solid rgba(245,183,0,.55);
+  color: #f5b700 !important;
+  padding: 13px 28px !important;
+  min-height: 52px;
+  box-sizing: border-box;
+  border-radius: 6px !important;
+  font-weight: 600;
+  font-size: 15px !important;
+  letter-spacing: .5px;
+  transition: background .2s, border-color .2s, transform .2s;
+  background: transparent;
+  margin-left: 14px;
+}
+.dlg-cta-secondary:hover { background: rgba(245,183,0,.1); border-color: #f5b700; transform: translateY(-2px); }
+/* Nav product link */
+.dlg-nav-product {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245,183,0,.12);
+  border: 1px solid rgba(245,183,0,.4);
+  color: #f5b700 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 5px 12px;
+  border-radius: 5px;
+  letter-spacing: .3px;
+  transition: background .2s;
+  white-space: nowrap;
+}
+.dlg-nav-product:hover { background: rgba(245,183,0,.22) !important; opacity: 1 !important; }
+/* Footer product strip */
+#dlg-product-strip {
+  background: rgba(245,183,0,.07);
+  border-top: 1px solid rgba(245,183,0,.18);
+  border-bottom: 1px solid rgba(245,183,0,.18);
+  padding: 28px 0;
+  text-align: center;
+}
+#dlg-product-strip p {
+  color: #cfd6e2;
+  font-size: 15px;
+  margin: 0 0 16px;
+  font-weight: 400;
+}
+#dlg-product-strip a.dlg-strip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5b700;
+  color: #0a1628 !important;
+  padding: 12px 28px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .4px;
+  text-decoration: none;
+  transition: background .2s, transform .2s;
+  box-shadow: 0 6px 20px rgba(245,183,0,.28);
+}
+#dlg-product-strip a.dlg-strip-btn:hover { background: #e0a800; transform: translateY(-1px); }
 
 /* Yellow CTA buttons — target only action buttons (have gap-3 class), NOT LinkedIn badge circles */
 a[class*="bg-primary"][class*="gap-3"] {
@@ -470,6 +536,7 @@ var H =
 +     '<li><a href="/#products">Products</a></li>'
 +     '<li><a href="/#team">Team</a></li>'
 +     '<li><a href="/#contact">Contact</a></li>'
++     '<li><a href="https://www.mystaffapp.ai" class="dlg-nav-product" target="_blank" rel="noopener noreferrer">Core Product: MyStaff app &#x2192;</a></li>'
 +     '<li class="dlg-lang-switch" aria-label="Language">'
 +       '<a href="https://www.diligram.com/" class="dlg-lang-en" aria-label="English" hreflang="en"><img src="https://cdn.weglot.com/flags/rectangle_mat/gb.svg" alt="English"></a>'
 +       '<a href="https://fr.diligram.com/" class="dlg-lang-fr" aria-label="Français" hreflang="fr"><img src="https://cdn.weglot.com/flags/rectangle_mat/fr.svg" alt="Français"></a>'
@@ -496,6 +563,7 @@ var H =
 +   '<h1><span class="dlg-gold">Total Governance Control.</span><br>Built for regulated industries.<br>Proven at scale.</h1>'
 +   '<p class="dlg-sub">The award-winning AI-driven platform giving leaders real-time visibility into who has received, engaged with, and acted on critical information \u2014 across every frontline.</p>'
 +   '<a href="/#solution" class="dlg-cta">Discover More \u2192</a>'
++   '<a href="https://www.mystaffapp.ai" class="dlg-cta-secondary" target="_blank" rel="noopener noreferrer">See MyStaff app in action \u2192</a>'
 + '</div>'
 + '<div id="dlg-proof" aria-label="Key metrics">'
 +   '<div id="dlg-proof-inner">'
@@ -575,6 +643,25 @@ function inject(){
   }
   bindLangClick('.dlg-lang-en:not(.dlg-lang-current)', 'en', 'weglot-language-en');
   bindLangClick('.dlg-lang-fr:not(.dlg-lang-current)', 'fr', 'weglot-language-fr');
+  // Inject product strip before the copyright footer
+  injectProductStrip();
+}
+
+function injectProductStrip(){
+  if(document.getElementById('dlg-product-strip')) return;
+  // Find the copyright/footer section (bg-text-primary with copyright text)
+  var secs = document.querySelectorAll('section');
+  var target = null;
+  for(var i = 0; i < secs.length; i++){
+    if(secs[i].className.indexOf('bg-text-primary') !== -1 && secs[i].textContent.indexOf('\u00a9') !== -1){
+      target = secs[i]; break;
+    }
+  }
+  if(!target) return;
+  var strip = document.createElement('section');
+  strip.id = 'dlg-product-strip';
+  strip.innerHTML = '<div style="max-width:1180px;margin:0 auto;padding:0 56px"><p>Our core product, MyStaff app, is live in the NHS and trusted by Tier-1 organisations.</p><a href="https://www.mystaffapp.ai" class="dlg-strip-btn" target="_blank" rel="noopener noreferrer">Visit MyStaff app \u2192</a></div>';
+  target.parentNode.insertBefore(strip, target);
 }
 
 function fixTeamCards(){
