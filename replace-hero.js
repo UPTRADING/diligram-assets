@@ -861,7 +861,7 @@ export default async (request, context) => {
   // ===== Social preview meta (OG + Twitter) — overwrite all stale values =====
   const OG_TITLE = "Diligram \u2014 Total Governance Control";
   const OG_DESC  = "The award-winning AI-driven software that turns governance and compliance into a continuous, automated and fully auditable process.";
-  const OG_IMAGE = "https://cdn.jsdelivr.net/gh/UPTRADING/diligram-assets@main/arch5_hero.jpg";
+  const OG_IMAGE = "https://cdn.jsdelivr.net/gh/UPTRADING/diligram-assets@main/og-image-v2.png";
   const setMeta = (attr, name, content) => {
     const re = new RegExp('<meta\\s+' + attr + '=["\\\']' + name.replace(/[:\-]/g, '\\$&') + '["\\\'][^>]*>', 'i');
     if (re.test(html)) {
@@ -874,8 +874,8 @@ export default async (request, context) => {
   setMeta('property', 'og:title',             OG_TITLE);
   setMeta('property', 'og:description',       OG_DESC);
   setMeta('property', 'og:image',             OG_IMAGE);
-  setMeta('property', 'og:image:width',       '1920');
-  setMeta('property', 'og:image:height',      '1080');
+  setMeta('property', 'og:image:width',       '1200');
+  setMeta('property', 'og:image:height',      '630');
   setMeta('property', 'og:image:alt',         OG_TITLE);
   setMeta('property', 'og:url',               'https://www.diligram.com/');
   setMeta('property', 'og:site_name',         'Diligram');
