@@ -568,7 +568,7 @@ var H =
 + '<div id="dlg-content">'
 +   '<span class="dlg-kicker">Diligram &nbsp;&middot;&nbsp; Powering Regulated Worlds</span>'
 +   '<h1><span class="dlg-gold">Total Governance Control.</span><br>Built for regulated industries.<br>Proven at scale.</h1>'
-+   '<p class="dlg-sub">Made for the day the regulator walks in unannounced \u2014 and you welcome them.</p>'
++   '<p class="dlg-sub">Makes you welcome the day the regulator walks in unannounced.</p>'
 +   '<a href="/#solution" class="dlg-cta">Discover More <span style="display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#0a1628;border-radius:50%;width:26px;height:26px;flex-shrink:0;margin-left:4px"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M16.0037 9.41421L7.39712 18.0208L5.98291 16.6066L14.5895 8H7.00373V6H18.0037V17H16.0037V9.41421Z"/></svg></span></a>'
 + '</div>'
 + '<div id="dlg-proof" aria-label="Key metrics">'
@@ -860,7 +860,7 @@ export default async (request, context) => {
 
   // ===== Social preview meta (OG + Twitter) — overwrite all stale values =====
   const OG_TITLE = "Diligram \u2014 Total Governance Control";
-  const OG_DESC  = "Made for the day the regulator walks in unannounced \u2014 and you welcome them.";
+  const OG_DESC  = "Makes you welcome the day the regulator walks in unannounced.";
   const OG_IMAGE = "https://cdn.jsdelivr.net/gh/UPTRADING/diligram-assets@main/arch5_hero.jpg";
   const setMeta = (attr, name, content) => {
     const re = new RegExp('<meta\\s+' + attr + '=["\\\']' + name.replace(/[:\-]/g, '\\$&') + '["\\\'][^>]*>', 'i');
